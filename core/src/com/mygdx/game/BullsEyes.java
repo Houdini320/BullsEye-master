@@ -14,7 +14,7 @@ public class BullsEyes extends Game {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		font = new BitmapFont(Gdx.files.internal("bitmap.fnt"), Gdx.files.internal("bitmap.png"), false);
+		font = new BitmapFont(Gdx.files.internal("artbrewery.fnt"), Gdx.files.internal("artbrewery.png"), false);
 
 		this.setScreen(new MainMenuScreen(this));
 

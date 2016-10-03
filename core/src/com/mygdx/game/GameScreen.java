@@ -32,8 +32,7 @@ public class GameScreen implements Screen {
 
         // load the drop sound effect and the rain background "music"
 
-        fondoMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-
+        fondoMusic = Gdx.audio.newMusic(Gdx.files.internal("fondo.wav"));
         fondoMusic.setLooping(true);
 
 
@@ -49,9 +48,6 @@ public class GameScreen implements Screen {
 
     }
 
-    private void spawnRaindrop() {
-
-    }
 
     @Override
     public void render(float delta) {
