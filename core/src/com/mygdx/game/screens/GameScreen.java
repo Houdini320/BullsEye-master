@@ -15,9 +15,15 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.BullsEyes;
+import com.mygdx.game.SimplerTouchTest;
+import com.mygdx.game.handlers.MyContactListener;
 import com.mygdx.game.utils.B2DBodyBuilder;
 import com.mygdx.game.utils.Ball;
+import com.mygdx.game.utils.Basquet;
+
+import java.util.Random;
 
 import static com.mygdx.game.utils.Constants.PPM;
 
@@ -40,15 +46,17 @@ public class GameScreen extends AbstractScreen {
     //Game Bodies
     Body ball, ball2;
     Body obstacle, obstacle2, obstacle3, obstacle4, obstacle5;
-    Body goal;
+    Body goal1,goal2,goal3,goal4;
 
     //Batch
     SpriteBatch batch;
-    Texture tex, floor;
+    Texture tex, tacho;
 
     //Musica
     Music fondoMusic;
 
+    //Random
+    Random rnd;
 
     //private OrthogonalTiledMapRenderer tmr;
     // private TiledMap map;
@@ -77,6 +85,9 @@ public class GameScreen extends AbstractScreen {
 
         //Setup the world
         world = new World(new Vector2(0, -9.8f), false);
+        world.setContactListener(new MyContactListener());
+
+        //
 
 
         //map = new TmxMapLoader().load("Maps/map test2.tmx");
@@ -92,6 +103,8 @@ public class GameScreen extends AbstractScreen {
         initArena();
         batch = new SpriteBatch();
         tex = new Texture("ball.png");
+        //tacho = new Texture("tachox64.png");
+
 
         // start the playback of the background music
         // when the screen is shown
@@ -112,6 +125,7 @@ public class GameScreen extends AbstractScreen {
         stage.act(delta);
 
         inputUpdate(delta);
+
 
         //cameraUpdate(delta);
 
@@ -149,12 +163,14 @@ public class GameScreen extends AbstractScreen {
 
         batch.begin();
         batch.draw(tex, ball.getPosition().x * PPM - (tex.getWidth() / 2), ball.getPosition().y * PPM - (tex.getHeight() / 2));
+        //batch.draw(tacho, createBasquet().getPosition().x * PPM - (tacho.getWidth() / 2), tacho.getPosition().y * PPM - (tacho.getHeight() / 2));
         batch.end();
 
         //tmr.render();
 
 
         //ApplicationAdapter.render();
+
 
 
     }
@@ -198,6 +214,11 @@ public class GameScreen extends AbstractScreen {
     private void initArena(){
         //Crea las paredes alrededor de la pantalla
         createWalls();
+        //crea el canasto desde el array
+        createBasquet();
+
+
+
 
 
         //Crea los Objetos "Obstaculos" Estaticos o Dinamicos de la Clase B2DBodyBuilder
@@ -205,11 +226,21 @@ public class GameScreen extends AbstractScreen {
         obstacle = B2DBodyBuilder.createBox(world, camera.viewportWidth / 2, camera.viewportHeight / 2, 28, 28, true, true);
         obstacle2 = B2DBodyBuilder.createBox(world, 399, 519, 10,  80, true, false);
         obstacle3 = B2DBodyBuilder.createBox(world, 700, 350, 100, 50, true, false);
+        obstacle3.getFixtureList().get(0).setUserData(obstacle3);
         obstacle4 = B2DBodyBuilder.createBox(world, 200, 550, 120, 20, true, false);
+
+        //Formar tacho con los obstaculos
+      /**  goal1 = B2DBodyBuilder.createBox(world, 650, 50, 100, 15, true, false);
+        goal2 = B2DBodyBuilder.createBox(world, 605, 140, 10,  170, true, false);
+        goal3 = B2DBodyBuilder.createBox(world, 695, 140, 10, 170, true, false);
+        goal4 = B2DBodyBuilder.createBox(world, 650, 80, 70, 40, true, true);
+*/
+        //
         ball = B2DBodyBuilder.createCircle(world, 50, 100, 38, false, false);
 
         //Crea la Pelota del Player de la clase Ball
         ball2 = Ball.createCircle(world, 100, 200, 50, false, false);
+        //ball2.getFixtureList().get(0).setUserData(ball2);
 
     }
 
@@ -223,6 +254,18 @@ public class GameScreen extends AbstractScreen {
         verts[3] = new Vector2(0 / PPM, 600 / PPM);
         verts[4] = new Vector2(0 / PPM, 0 / PPM);
         B2DBodyBuilder.createChainShape(world, verts);
+
+    }
+
+    private void createBasquet(){
+
+        //Formar tacho con los obstaculos
+        Body[] boxes = new Body[4];
+        //Array<Body> boxes = new Array<Body>(4);
+        boxes[0] = Basquet.createBos(world, 650, 50, 100, 15, true, false);
+        boxes[1] = Basquet.createBos(world, 605, 140, 10,  170, true, false);
+        boxes[2] = Basquet.createBos(world, 695, 140, 10, 170, true, false);
+        boxes[3] = Basquet.createBos(world, 650, 80, 80, 50, true, true);
 
     }
 
@@ -258,11 +301,15 @@ public class GameScreen extends AbstractScreen {
         //Input para que cuando toques la pantalla del celular  la Pelota salte
         if (Gdx.input.isTouched()) {
             ball.applyForceToCenter(0, 500, false);
-        }
-        //Gdx.input.setInputProcessor(new SimplerTouchTest());
 
-        //SimplerTouchTest inputProcessor = new SimplerTouchTest();
-        //Gdx.input.setInputProcessor(inputProcessor);
+
+            //Gdx.input.setInputProcessor(new SimplerTouchTest());
+
+            //SimplerTouchTest inputProcessor = new SimplerTouchTest();
+            //Gdx.input.setInputProcessor(inputProcessor);
+
+
+        }
 
 
     }
@@ -290,6 +337,9 @@ public class GameScreen extends AbstractScreen {
 
     }
 */
+
+
+
 }
 
 

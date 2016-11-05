@@ -16,8 +16,15 @@ import static com.mygdx.game.utils.Constants.PPM;
 
     public final class Ball  {
 
+    //private Body body;
+    //private Fixture fixture;
+    //private World world;
+    //public final float RADIUS = .2f;
+
 
         private Ball (){}
+
+
 
 
     public static Body createCircle (World world, int x, int y, int rad, boolean isStatic, boolean isSensor){
@@ -29,24 +36,36 @@ import static com.mygdx.game.utils.Constants.PPM;
         else
             def.type = BodyDef.BodyType.DynamicBody;
         def.position.set(x / PPM, y / PPM);
-        def.fixedRotation = true;
+        def.fixedRotation = false;
         bBody = world.createBody(def);
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(rad  / 2 / PPM);
+        shape.setRadius(rad  / 2f / PPM);
 
         FixtureDef fDef = new FixtureDef();
         fDef.shape = shape;
-        fDef.density = 1.0f;
-        fDef.restitution = 1.0f;
+        fDef.density = .25f;
+        fDef.friction = .25f;
+        fDef.restitution = 1f;
         // you can use like a contact world listener for a body goes to a goal
         fDef.isSensor = isSensor;
 
-        bBody.createFixture(shape, 1.0f);
+      //  bBody.createFixture(shape, 1.0f);
+
+        world.createBody(def).createFixture(fDef);
+        //this.bBody = world.createBody(def);
+        //this.bBody.createFixture(fDef).setUserData(this);
         shape.dispose();
 
         return bBody;
     }
 
+  /**  public Body getBody(){
+        return body;
+    }
 
+    public Fixture getFixture(){
+        return fixture;
+
+*/
 }
