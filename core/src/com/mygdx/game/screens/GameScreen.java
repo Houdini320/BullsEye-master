@@ -248,7 +248,7 @@ public class GameScreen extends AbstractScreen {
     private void createBasquet(float posX, float posY) {
         //Formar tacho con los obstaculos
         float x, y;
-        Body[] boxes = new Body[4];
+        Body[] boxes  = new Body[4];
 // posX y posY es el centro del tacho el tacho tiene una altura de 185 y un ancho de 100
         x = posX/PPM;
         y = posY/PPM;
