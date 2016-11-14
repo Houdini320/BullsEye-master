@@ -206,7 +206,7 @@ public class GameScreen extends AbstractScreen {
         //Crea las paredes alrededor de la pantalla
         createWalls();
         //crea el canasto desde el array
-        createBasquet();
+        createBasquet(300,110);
 
 
         //Crea los Objetos "Obstaculos" Estaticos o Dinamicos de la Clase B2DBodyBuilder
@@ -245,17 +245,18 @@ public class GameScreen extends AbstractScreen {
 
     }
 
-    private void createBasquet() {
+    private void createBasquet(float posX, float posY) {
         //Formar tacho con los obstaculos
-
+        float x, y;
         Body[] boxes = new Body[4];
-
-
+// posX y posY es el centro del tacho el tacho tiene una altura de 185 y un ancho de 100
+        x = posX/PPM;
+        y = posY/PPM;
         //Array<Body> boxes = new Array<Body>(4);
-        boxes[0] = Basquet.createBos(world, 650, 50, 100, 15, true, false);
-        boxes[1] = Basquet.createBos(world, 605, 140, 10, 170, true, false);
-        boxes[2] = Basquet.createBos(world, 695, 140, 10, 170, true, false);
-        boxes[3] = Basquet.createBos(world, 650, 80, 80, 50, true, true);
+        boxes[0] = Basquet.createBos(world, x * PPM, y * PPM - 85, 100, 15, true, false);
+        boxes[1] = Basquet.createBos(world, x * PPM - 45, y * PPM + 7.5f, 10, 170, true, false);
+        boxes[2] = Basquet.createBos(world, x * PPM + 45, y * PPM + 7.5f, 10, 170, true, false);
+        boxes[3] = Basquet.createBos(world, x * PPM, y * PPM - 52, 80, 50, true, true);
 
 
     }
