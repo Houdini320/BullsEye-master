@@ -29,6 +29,8 @@ public class GameScreenManager {
         initGameScreens();
         setScreen(STATE.MAIN_MENU);
         setScreen(STATE.PLAY);
+        // crear pantalla GAMEOVER
+        setScreen(STATE.SETTINGS);
 
     }
 
