@@ -35,13 +35,14 @@ import static com.mygdx.game.utils.Constants.PPM;
 public class GameScreen extends AbstractScreen {
 
 
-    public static World world;
+
     //Camera
     OrthographicCamera camera;
     ExtendViewport viewport;
     ShapeRenderer shapes;
 
     //Box2D
+    public static World world;
    // World world;
     Box2DDebugRenderer b2dr;
 
@@ -60,9 +61,6 @@ public class GameScreen extends AbstractScreen {
 
     //Random
     Random rnd;
-
-    MouseJointDef jointDef;
-    MouseJoint joint;
 
 
     //private OrthogonalTiledMapRenderer tmr;
@@ -209,7 +207,7 @@ public class GameScreen extends AbstractScreen {
         //Crea las paredes alrededor de la pantalla
         createWalls();
         //crea el canasto desde el array
-        createBasquet();
+        createBasquet(600,110);
 
 
         //Crea los Objetos "Obstaculos" Estaticos o Dinamicos de la Clase B2DBodyBuilder
@@ -219,7 +217,7 @@ public class GameScreen extends AbstractScreen {
         obstacle3 = B2DBodyBuilder.createBox(world, 700, 350, 100, 50, true, false);
         //   obstacle3.getFixtureList().get(0).setUserData(obstacle3);
         obstacle4 = B2DBodyBuilder.createBox(world, 200, 550, 120, 20, true, false);
-        rectangletacho = B2DBodyBuilder.createBox(world, 650, 135, 100, 185, true, true);
+        //rectangletacho = B2DBodyBuilder.createBox(world, 650, 135, 100, 185, true, true);
 
         //Formar tacho con los obstaculos
         /**  goal1 = B2DBodyBuilder.createBox(world, 650, 50, 100, 15, true, false);
@@ -250,26 +248,25 @@ public class GameScreen extends AbstractScreen {
 
     }
 
-    private void createBasquet() {
-
+    private void createBasquet(float posX, float posY) {
         //Formar tacho con los obstaculos
-        Body[] boxes = new Body[5];
+        float x, y;
+        Body[] boxes  = new Body[4];
+// posX y posY es el centro del tacho el tacho tiene una altura de 185 y un ancho de 100
+        x = posX/PPM;
+        y = posY/PPM;
         //Array<Body> boxes = new Array<Body>(4);
-        boxes[0] = Basquet.createBos(world, 650, 135, 100, 185, true, true);
-        //boxes[0] = rectangletacho;
-        boxes[1] = Basquet.createBos(world, boxes[0].getPosition().x * PPM, 50, 100, 15, true, false);
-        boxes[2] = Basquet.createBos(world, 605, boxes[0].getPosition().y * PPM, 10, 170, true, false);
-        boxes[3] = Basquet.createBos(world, 695, boxes[0].getPosition().y * PPM, 10, 170, true, false);
-        boxes[4] = Basquet.createBos(world, boxes[0].getPosition().x * PPM, 80, 80, 50, true, true);
-
-        //boxes[0].getPosition().x * PPM, boxes[0].getPosition().y * PPM
+        boxes[0] = Basquet.createBos(world, x * PPM, y * PPM - 85, 100, 15, true, false);
+        boxes[1] = Basquet.createBos(world, x * PPM - 45, y * PPM + 7.5f, 10, 170, true, false);
+        boxes[2] = Basquet.createBos(world, x * PPM + 45, y * PPM + 7.5f, 10, 170, true, false);
+        boxes[3] = Basquet.createBos(world, x * PPM, y * PPM - 52, 80, 50, true, true);
 
 
     }
 
 
     public void inputUpdate(float delta) {
-        int horizontalForce = 0;
+      /**  int horizontalForce = 0;
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             horizontalForce -= 1;
@@ -332,27 +329,10 @@ public class GameScreen extends AbstractScreen {
 
         }
 
-
+*/
     }
 
 
-    Vector3 tp = new Vector3();
-    Vector2 tp2 = new Vector2();
-    boolean dragging;
-
-
-    QueryCallback queryCallback = new QueryCallback() {
-        @Override
-        public boolean reportFixture(Fixture fixture) {
-            if (!fixture.testPoint(tp.x, tp.y))
-                return true;
-            jointDef.bodyB = fixture.getBody();
-            jointDef.target.set(tp.x, tp.y);
-            joint = (MouseJoint) world.createJoint(jointDef);
-
-            return false;
-        }
-    };
 
 
     /**
@@ -395,6 +375,7 @@ public class GameScreen extends AbstractScreen {
     }
 
 }
+
 
 
 

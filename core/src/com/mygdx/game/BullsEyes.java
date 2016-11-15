@@ -62,7 +62,6 @@ public class BullsEyes extends Game implements InputProcessor {
 	private ExtendViewport viewport;
 	private ShapeRenderer shapes;
 
-	//World world;
 
 	MouseJointDef jointDef;
 	MouseJoint joint;
@@ -104,9 +103,9 @@ public class BullsEyes extends Game implements InputProcessor {
 		shapes.end();
 		//mouse joint
 		jointDef = new MouseJointDef();
-		jointDef.bodyA = GameScreen.ball2;
+		jointDef.bodyA = GameScreen.ball;
 		jointDef.collideConnected = true;
-		jointDef.maxForce = 500;
+		jointDef.maxForce = 5000;
 
 
 		//Input para que salga de la Pantalla con la tecla Escape
@@ -134,7 +133,8 @@ public class BullsEyes extends Game implements InputProcessor {
 		public boolean reportFixture(Fixture fixture) {
 			if (!fixture.testPoint(tp.x, tp.y))
 				return true;
-			jointDef.bodyB = fixture.getBody();
+			jointDef.bodyB = GameScreen.ball2;
+			//jointDef.bodyB = fixture.getBody();
 			jointDef.target.set(tp.x, tp.y);
 			joint = (MouseJoint) GameScreen.world.createJoint(jointDef);
 
@@ -176,7 +176,7 @@ public class BullsEyes extends Game implements InputProcessor {
 
 	@Override public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 		//if (button != Input.Buttons.LEFT || pointer > 0) return false;
-		if (joint== null)
+		if (joint == null)
 			return false;
 
 		GameScreen.world.destroyJoint(joint);
