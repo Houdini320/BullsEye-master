@@ -4,10 +4,13 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
+
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 /**
@@ -42,6 +45,7 @@ public class SimplerTouchTest extends ApplicationAdapter implements InputProcess
         shapes.begin(ShapeRenderer.ShapeType.Filled);
         shapes.circle(tp.x, tp.y, 0.25f, 16);
         shapes.end();
+
     }
 
     Vector3 tp = new Vector3();
@@ -74,7 +78,8 @@ public class SimplerTouchTest extends ApplicationAdapter implements InputProcess
     @Override public boolean touchUp (int screenX, int screenY, int pointer, int button) {
         if (button != Input.Buttons.LEFT || pointer > 0) return false;
         camera.unproject(tp.set(screenX, screenY, 0));
-        dragging = false;
+       //camera.unproject(tp.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+        dragging = true;
         return true;
     }
 
@@ -108,12 +113,12 @@ public class SimplerTouchTest extends ApplicationAdapter implements InputProcess
         return false;
     }
 
-    /**public static void main (String[] arg) {
+    public static void main (String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.width = 1280;
         config.height = 720;
         config.useHDPI = true;
         new LwjglApplication(new SimplerTouchTest(), config);
     }
-*/
+
 }

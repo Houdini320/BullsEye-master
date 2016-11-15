@@ -10,10 +10,17 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
+import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.mygdx.game.BullsEyes;
 import com.mygdx.game.handlers.MyContactListener;
 import com.mygdx.game.utils.B2DBodyBuilder;
@@ -28,19 +35,19 @@ import static com.mygdx.game.utils.Constants.PPM;
 public class GameScreen extends AbstractScreen {
 
 
-    private final float SCALE = 2.0F;
-
-
+    public static World world;
     //Camera
     OrthographicCamera camera;
+    ExtendViewport viewport;
+    ShapeRenderer shapes;
 
     //Box2D
-    World world;
+   // World world;
     Box2DDebugRenderer b2dr;
 
     //Game Bodies
-    Body ball, ball2;
-    Body obstacle, obstacle2, obstacle3, obstacle4, obstacle5;
+    public static Body ball, ball2;
+    Body obstacle, obstacle2, obstacle3, obstacle4, obstacle5, rectangletacho;
     Body goal1, goal2, goal3, goal4;
 
 
@@ -53,6 +60,10 @@ public class GameScreen extends AbstractScreen {
 
     //Random
     Random rnd;
+
+    MouseJointDef jointDef;
+    MouseJoint joint;
+
 
     //private OrthogonalTiledMapRenderer tmr;
     // private TiledMap map;
@@ -95,9 +106,14 @@ public class GameScreen extends AbstractScreen {
     public void show() {
 
         initArena();
+        rnd = new Random();
         batch = new SpriteBatch();
         tex = new Texture("ball.png");
         //tacho = new Texture("tachox64.png");
+
+
+
+        Gdx.input.setInputProcessor(app);
 
 
         // start the playback of the background music
@@ -119,7 +135,6 @@ public class GameScreen extends AbstractScreen {
         stage.act(delta);
 
         inputUpdate(delta);
-
 
         //cameraUpdate(delta);
 
@@ -143,7 +158,9 @@ public class GameScreen extends AbstractScreen {
         //Inicia la musica en la Pantalla de juego
         fondoMusic.play();
 
-        //
+
+
+
         //update(Gdx.graphics.getDeltaTime());
 
         // tell the camera to update its matrices.
@@ -155,7 +172,7 @@ public class GameScreen extends AbstractScreen {
 
 
         batch.begin();
-        batch.draw(tex, ball.getPosition().x * PPM - (tex.getWidth() / 2), ball.getPosition().y * PPM - (tex.getHeight() / 2));
+        batch.draw(tex, ball2.getPosition().x * PPM - (tex.getWidth() / 2), ball2.getPosition().y * PPM - (tex.getHeight() / 2));
         //batch.draw(tacho, createBasquet().getPosition().x * PPM - (tacho.getWidth() / 2), tacho.getPosition().y * PPM - (tacho.getHeight() / 2));
         batch.end();
 
@@ -187,20 +204,6 @@ public class GameScreen extends AbstractScreen {
     public void resume() {
     }
 
-    @Override
-    public void dispose() {
-        super.dispose();
-        b2dr.dispose();
-        world.dispose();
-        tex.dispose();
-
-        fondoMusic.dispose();
-        batch.dispose();
-        //tmr.dispose();
-        //map.dispose();
-
-
-    }
 
     private void initArena() {
         //Crea las paredes alrededor de la pantalla
@@ -214,8 +217,9 @@ public class GameScreen extends AbstractScreen {
         obstacle = B2DBodyBuilder.createBox(world, camera.viewportWidth / 2, camera.viewportHeight / 2, 28, 28, true, true);
         obstacle2 = B2DBodyBuilder.createBox(world, 399, 519, 10, 80, true, false);
         obstacle3 = B2DBodyBuilder.createBox(world, 700, 350, 100, 50, true, false);
-        obstacle3.getFixtureList().get(0).setUserData(obstacle3);
+        //   obstacle3.getFixtureList().get(0).setUserData(obstacle3);
         obstacle4 = B2DBodyBuilder.createBox(world, 200, 550, 120, 20, true, false);
+        rectangletacho = B2DBodyBuilder.createBox(world, 650, 135, 100, 185, true, true);
 
         //Formar tacho con los obstaculos
         /**  goal1 = B2DBodyBuilder.createBox(world, 650, 50, 100, 15, true, false);
@@ -228,7 +232,8 @@ public class GameScreen extends AbstractScreen {
 
         //Crea la Pelota del Player de la clase Ball
         ball2 = Ball.createCircle(world, 100, 200, 50, false, false);
-        //ball2.getFixtureList().get(0).setUserData(ball2);
+        //ball2.getFixtureList().get(1).setUserData(ball2);
+
 
     }
 
@@ -246,16 +251,18 @@ public class GameScreen extends AbstractScreen {
     }
 
     private void createBasquet() {
+
         //Formar tacho con los obstaculos
-
-        Body[] boxes = new Body[4];
-
-
+        Body[] boxes = new Body[5];
         //Array<Body> boxes = new Array<Body>(4);
-        boxes[0] = Basquet.createBos(world, 650, 50, 100, 15, true, false);
-        boxes[1] = Basquet.createBos(world, 605, 140, 10, 170, true, false);
-        boxes[2] = Basquet.createBos(world, 695, 140, 10, 170, true, false);
-        boxes[3] = Basquet.createBos(world, 650, 80, 80, 50, true, true);
+        boxes[0] = Basquet.createBos(world, 650, 135, 100, 185, true, true);
+        //boxes[0] = rectangletacho;
+        boxes[1] = Basquet.createBos(world, boxes[0].getPosition().x * PPM, 50, 100, 15, true, false);
+        boxes[2] = Basquet.createBos(world, 605, boxes[0].getPosition().y * PPM, 10, 170, true, false);
+        boxes[3] = Basquet.createBos(world, 695, boxes[0].getPosition().y * PPM, 10, 170, true, false);
+        boxes[4] = Basquet.createBos(world, boxes[0].getPosition().x * PPM, 80, 80, 50, true, true);
+
+        //boxes[0].getPosition().x * PPM, boxes[0].getPosition().y * PPM
 
 
     }
@@ -274,6 +281,7 @@ public class GameScreen extends AbstractScreen {
         }
 
         if (Gdx.input.isKeyJustPressed((Input.Keys.DOWN))) {
+            ball.getFixtureList();
             ball.getPosition();
 
         }
@@ -289,10 +297,34 @@ public class GameScreen extends AbstractScreen {
         }
         //Input para que cuando toques la pantalla del celular  la Pelota salte
         if (Gdx.input.isTouched()) {
-            ball.applyForceToCenter(0, 500, false);
+            ball.applyForceToCenter(60f, 100f, false);
+            //ball.applyForceToCenter(0, 500, false);
+
+            // process user input
+            if (Gdx.input.isTouched()) {
+                Vector3 touchPos = new Vector3();
+                touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+                camera.unproject(touchPos);
+                ball2.getPosition().x = touchPos.x - 64 / 2;
+            }
+
+            // Will Return whether the screen is currently touched
+            boolean firstFingerTouching = Gdx.input.isTouched(0);
+            boolean secondFingerTouching = Gdx.input.isTouched(1);
+            boolean thirdFingerTouching = Gdx.input.isTouched(2);
+
+            // Will return whether the screen has just been touched
+            boolean justTouched = Gdx.input.justTouched();
+
+            int firstX = Gdx.input.getX();
+            int firstY = Gdx.input.getY();
 
 
             //Gdx.input.setInputProcessor(new SimplerTouchTest());
+
+
+            //inputProcessor = new SimplerTouchTest();
+            //Gdx.input.setInputProcessor(inputProcessor);
 
             //SimplerTouchTest inputProcessor = new SimplerTouchTest();
             //Gdx.input.setInputProcessor(inputProcessor);
@@ -303,30 +335,64 @@ public class GameScreen extends AbstractScreen {
 
     }
 
-/**
- //Metodo para que la camara siga algun objeto o quede fija en alguna posicion
- public void cameraUpdate(float delta) {
- float w = Gdx.graphics.getWidth();
- float h = Gdx.graphics.getHeight();
- Vector3 position = camera.position;
- // hacer que la camara se demore un ratito en seguir al perdonaje
- //a + (b - a) * lerp
- // b = target
- // a = current camera position
- //position.x = camera.position.x + (platform.getPosition().x * PPM - camera.position.x) * .1f;
- //position.y = camera.position.y + (platform.getPosition().y * PPM - camera.position.y) * .1f;
- Vector2 p = obstacle.getPosition();
- position.x = w / SCALE / 2;
- position.y = h / SCALE / 2;
- camera.position.set(position);
+
+    Vector3 tp = new Vector3();
+    Vector2 tp2 = new Vector2();
+    boolean dragging;
 
 
- camera.update();
+    QueryCallback queryCallback = new QueryCallback() {
+        @Override
+        public boolean reportFixture(Fixture fixture) {
+            if (!fixture.testPoint(tp.x, tp.y))
+                return true;
+            jointDef.bodyB = fixture.getBody();
+            jointDef.target.set(tp.x, tp.y);
+            joint = (MouseJoint) world.createJoint(jointDef);
+
+            return false;
+        }
+    };
 
 
- }
- */
+    /**
+     * //Metodo para que la camara siga algun objeto o quede fija en alguna posicion
+     * public void cameraUpdate(float delta) {
+     * float w = Gdx.graphics.getWidth();
+     * float h = Gdx.graphics.getHeight();
+     * Vector3 position = camera.position;
+     * // hacer que la camara se demore un ratito en seguir al perdonaje
+     * //a + (b - a) * lerp
+     * // b = target
+     * // a = current camera position
+     * //position.x = camera.position.x + (platform.getPosition().x * PPM - camera.position.x) * .1f;
+     * //position.y = camera.position.y + (platform.getPosition().y * PPM - camera.position.y) * .1f;
+     * Vector2 p = obstacle.getPosition();
+     * position.x = w / SCALE / 2;
+     * position.y = h / SCALE / 2;
+     * camera.position.set(position);
+     * <p/>
+     * <p/>
+     * camera.update();
+     * <p/>
+     * <p/>
+     * }
+     */
+    @Override
+    public void dispose() {
+        super.dispose();
+        b2dr.dispose();
+        world.dispose();
+        tex.dispose();
 
+
+        fondoMusic.dispose();
+        batch.dispose();
+        //tmr.dispose();
+        //map.dispose();
+
+
+    }
 
 }
 

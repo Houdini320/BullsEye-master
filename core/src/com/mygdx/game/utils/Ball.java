@@ -51,14 +51,18 @@ import static com.mygdx.game.utils.Constants.PPM;
         fDef.isSensor = isSensor;
 
       //  bBody.createFixture(shape, 1.0f);
-
+        //utilizando esta sentencia tiene Fixture pero la textura no sigue la pelota
         world.createBody(def).createFixture(fDef);
+        //Utilizando esta sentencia la pelota rebota y la tectura la sigue pero crashea el joint :/
+        //bBody.createFixture(fDef);
         //this.bBody = world.createBody(def);
         //this.bBody.createFixture(fDef).setUserData(this);
         shape.dispose();
 
         return bBody;
     }
+
+
 
   /**  public Body getBody(){
         return body;

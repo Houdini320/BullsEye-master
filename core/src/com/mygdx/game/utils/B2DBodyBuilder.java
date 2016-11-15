@@ -34,11 +34,17 @@ public final class B2DBodyBuilder {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(width / 2 / PPM, height / 2 / PPM);
 
-       FixtureDef fDef = new FixtureDef();
+        FixtureDef fDef = new FixtureDef();
         fDef.shape = shape;
         fDef.density = 1.0f;
+        fDef.friction = .25f;
+        fDef.restitution = 1f;
         fDef.isSensor = isSensor;
-        bBody.createFixture(fDef);
+        //bBody.createFixture(fDef);
+
+
+        world.createBody(def).createFixture(fDef);
+
         shape.dispose();
 
         return bBody;
@@ -71,11 +77,15 @@ public final class B2DBodyBuilder {
         fDef.restitution = 1f;
         fDef.friction = 0f;
         fDef.isSensor = isSensor;
+        
         cBody.createFixture(shape, 1.0f);
-        shape.dispose();
+
+
+       // world.createBody(def).createFixture(fDef);
 
         //this.body = world.createBody(def);
         //this.body.createFixture(fDef).setUserData(this);
+        shape.dispose();
 
         return cBody;
     }
