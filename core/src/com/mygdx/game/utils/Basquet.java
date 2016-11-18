@@ -41,7 +41,9 @@ public final class Basquet {
         fDef.shape = shape;
         fDef.density = 1.0f;
         fDef.isSensor = isSensor;
-        bBody.createFixture(fDef);
+
+        bBody.createFixture(fDef).setUserData(bBody);
+
         shape.dispose();
 
         return bBody;

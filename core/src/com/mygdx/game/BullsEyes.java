@@ -9,22 +9,19 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.mygdx.game.managers.GameScreenManager;
+import com.mygdx.game.screens.GameOverScreen;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.screens.MainMenuScreen;
-import com.mygdx.game.utils.Ball;
 
 
 public class BullsEyes extends Game implements InputProcessor {
@@ -41,6 +38,8 @@ public class BullsEyes extends Game implements InputProcessor {
 	//Variables del Game
 	public static int V_WIDTH = 800;
 	public static int V_HEIGHT = 600;
+   //960x540
+
 
 	//Variables de los Managers
 	public GameScreenManager gsm;
@@ -86,8 +85,11 @@ public class BullsEyes extends Game implements InputProcessor {
 		//Gdx.input.setInputProcessor(this);
 
 
-
+		// Inicia la Pantalla del MainMenu
 		this.setScreen(new MainMenuScreen(this));
+		// Inicia la pantalla de GameOver
+		// TODO FALTA CREAR EL IF PARA QUE APAREZCA AL FINAL LA PANTALLA GAMEOVER
+		//this.setScreen(new GameOverScreen(this));
 
 	}
 
@@ -101,6 +103,8 @@ public class BullsEyes extends Game implements InputProcessor {
 		shapes.begin(ShapeRenderer.ShapeType.Filled);
 		shapes.circle(tp.x, tp.y, 0.25f, 16);
 		shapes.end();
+
+
 		//mouse joint
 		jointDef = new MouseJointDef();
 		jointDef.bodyA = GameScreen.ball;

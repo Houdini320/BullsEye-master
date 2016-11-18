@@ -5,21 +5,15 @@ package com.mygdx.game.screens;
  */
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
-import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.mygdx.game.BullsEyes;
 import com.mygdx.game.handlers.MyContactListener;
@@ -107,7 +101,8 @@ public class GameScreen extends AbstractScreen {
         rnd = new Random();
         batch = new SpriteBatch();
         tex = new Texture("ball.png");
-        //tacho = new Texture("tachox64.png");
+       // tacho = new Texture("tacho2x64");
+
 
 
 
@@ -171,7 +166,7 @@ public class GameScreen extends AbstractScreen {
 
         batch.begin();
         batch.draw(tex, ball2.getPosition().x * PPM - (tex.getWidth() / 2), ball2.getPosition().y * PPM - (tex.getHeight() / 2));
-        //batch.draw(tacho, createBasquet().getPosition().x * PPM - (tacho.getWidth() / 2), tacho.getPosition().y * PPM - (tacho.getHeight() / 2));
+        //batch.draw(tacho, createBasquet(600, 100) * PPM - (tacho.getWidth() / 2), createBasquet().getPosition().y * PPM - (tacho.getHeight() / 2));
         batch.end();
 
         //tmr.render();
@@ -261,6 +256,14 @@ public class GameScreen extends AbstractScreen {
         boxes[2] = Basquet.createBos(world, x * PPM + 45, y * PPM + 7.5f, 10, 170, true, false);
         boxes[3] = Basquet.createBos(world, x * PPM, y * PPM - 52, 80, 50, true, true);
 
+
+    }
+
+    public void nextLevel(){
+
+        if (ball2 == ball){
+            initArena();
+        }
 
     }
 

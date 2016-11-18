@@ -2,6 +2,7 @@ package com.mygdx.game.managers;
 
 import com.mygdx.game.BullsEyes;
 import com.mygdx.game.screens.AbstractScreen;
+import com.mygdx.game.screens.GameOverScreen;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.screens.MainMenuScreen;
 import java.util.HashMap;
@@ -19,7 +20,7 @@ public class GameScreenManager {
     public enum STATE {
         MAIN_MENU,
         PLAY,
-        SETTINGS
+        GAMEOVER
 
     }
 
@@ -30,7 +31,7 @@ public class GameScreenManager {
         setScreen(STATE.MAIN_MENU);
         setScreen(STATE.PLAY);
         // crear pantalla GAMEOVER
-        setScreen(STATE.SETTINGS);
+        setScreen(STATE.GAMEOVER);
 
     }
 
@@ -38,6 +39,7 @@ public class GameScreenManager {
         this.gameScreens = new HashMap<STATE, AbstractScreen>();
         this.gameScreens.put(STATE.MAIN_MENU, new MainMenuScreen(app));
         this.gameScreens.put(STATE.PLAY, new GameScreen(app));
+        this.gameScreens.put(STATE.GAMEOVER, new GameOverScreen(app));
     }
 
     public void setScreen (STATE nextScreen) {

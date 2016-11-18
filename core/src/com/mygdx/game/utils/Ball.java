@@ -54,12 +54,22 @@ import static com.mygdx.game.utils.Constants.PPM;
         //utilizando esta sentencia tiene Fixture pero la textura no sigue la pelota
         //world.createBody(def).createFixture(fDef);
         //Utilizando esta sentencia la pelota rebota y la tectura la sigue pero crashea el joint :/
-        bBody.createFixture(fDef);
+        bBody.createFixture(fDef).setUserData(bBody);
         //this.bBody = world.createBody(def);
         //this.bBody.createFixture(fDef).setUserData(this);
         shape.dispose();
 
         return bBody;
+    }
+
+    public void hit (){
+        System.out.println("he sido golpeado");
+    }
+
+    public void trigger (){
+        System.out.println("TRIGGERED");
+        //  triggerBody.applyAngularImpulse(2f, false);
+
     }
 
 

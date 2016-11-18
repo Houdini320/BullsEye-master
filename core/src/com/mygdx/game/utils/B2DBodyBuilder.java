@@ -42,8 +42,9 @@ public final class B2DBodyBuilder {
         fDef.isSensor = isSensor;
         //bBody.createFixture(fDef);
 
+        bBody.createFixture(fDef).setUserData(bBody);
 
-        world.createBody(def).createFixture(fDef);
+        //world.createBody(def).createFixture(fDef);
 
         shape.dispose();
 
@@ -78,7 +79,7 @@ public final class B2DBodyBuilder {
         fDef.friction = 0f;
         fDef.isSensor = isSensor;
         
-        cBody.createFixture(shape, 1.0f);
+        cBody.createFixture(fDef).setUserData(cBody);
 
 
        // world.createBody(def).createFixture(fDef);
@@ -103,6 +104,15 @@ public final class B2DBodyBuilder {
         wbody.createFixture(shape, 1.0f);
         shape.dispose();
         return wbody;
+
+    }
+    public void hit (){
+        System.out.println("he sido golpeado");
+    }
+
+    public void trigger (){
+        System.out.println("TRIGGERED");
+      //  triggerBody.applyAngularImpulse(2f, false);
 
     }
 
