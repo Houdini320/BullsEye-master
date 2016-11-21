@@ -20,14 +20,15 @@ import com.mygdx.game.handlers.MyContactListener;
 import com.mygdx.game.utils.B2DBodyBuilder;
 import com.mygdx.game.utils.Ball;
 import com.mygdx.game.utils.Basquet;
+import com.mygdx.game.utils.Tacho;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import static com.mygdx.game.utils.Constants.PPM;
 
 
 public class GameScreen extends AbstractScreen {
-
 
 
     //Camera
@@ -37,7 +38,7 @@ public class GameScreen extends AbstractScreen {
 
     //Box2D
     public static World world;
-   // World world;
+    // World world;
     Box2DDebugRenderer b2dr;
 
     //Game Bodies
@@ -56,7 +57,8 @@ public class GameScreen extends AbstractScreen {
     //Random
     Random rnd;
 
-
+    //Tacho
+Tacho tacho1,tacho2,tacho3,tacho4;
     //private OrthogonalTiledMapRenderer tmr;
     // private TiledMap map;
 
@@ -101,9 +103,7 @@ public class GameScreen extends AbstractScreen {
         rnd = new Random();
         batch = new SpriteBatch();
         tex = new Texture("ball.png");
-       // tacho = new Texture("tacho2x64");
-
-
+        // tacho = new Texture("tacho2x64");
 
 
         Gdx.input.setInputProcessor(app);
@@ -150,8 +150,6 @@ public class GameScreen extends AbstractScreen {
 
         //Inicia la musica en la Pantalla de juego
         fondoMusic.play();
-
-
 
 
         //update(Gdx.graphics.getDeltaTime());
@@ -202,7 +200,7 @@ public class GameScreen extends AbstractScreen {
         //Crea las paredes alrededor de la pantalla
         createWalls();
         //crea el canasto desde el array
-        createBasquet(600,110);
+        createBasquet(600, 110);
 
 
         //Crea los Objetos "Obstaculos" Estaticos o Dinamicos de la Clase B2DBodyBuilder
@@ -227,7 +225,12 @@ public class GameScreen extends AbstractScreen {
         ball2 = Ball.createCircle(world, 100, 200, 50, false, false);
         //ball2.getFixtureList().get(1).setUserData(ball2);
 
-
+// Creacion de los tachos
+        tacho1 = new Tacho(world,600,110);
+/*        tacho2 = new Tacho(world,500,110);
+        tacho3 = new Tacho(world,400,110);
+        tacho4 = new Tacho(world,300,110);
+*/
     }
 
     //Metodo con las indicaciones de los vectores de las paredes
@@ -246,22 +249,21 @@ public class GameScreen extends AbstractScreen {
     private void createBasquet(float posX, float posY) {
         //Formar tacho con los obstaculos
         float x, y;
-        Body[] boxes  = new Body[4];
+        Body[] boxes2 = new Body[4];
 // posX y posY es el centro del tacho el tacho tiene una altura de 185 y un ancho de 100
-        x = posX/PPM;
-        y = posY/PPM;
+        x = posX / PPM;
+        y = posY / PPM;
         //Array<Body> boxes = new Array<Body>(4);
-        boxes[0] = Basquet.createBos(world, x * PPM, y * PPM - 85, 100, 15, true, false);
-        boxes[1] = Basquet.createBos(world, x * PPM - 45, y * PPM + 7.5f, 10, 170, true, false);
-        boxes[2] = Basquet.createBos(world, x * PPM + 45, y * PPM + 7.5f, 10, 170, true, false);
-        boxes[3] = Basquet.createBos(world, x * PPM, y * PPM - 52, 80, 50, true, true);
-
+        boxes2[0] = Basquet.createBos(world, x * PPM, y * PPM - 85, 100, 15, true, false);
+        boxes2[1] = Basquet.createBos(world, x * PPM - 45, y * PPM + 7.5f, 10, 170, true, false);
+        boxes2[2] = Basquet.createBos(world, x * PPM + 45, y * PPM + 7.5f, 10, 170, true, false);
+        boxes2[3] = Basquet.createBos(world, x * PPM, y * PPM - 52, 80, 50, true, true);
 
     }
 
-    public void nextLevel(){
+    public void nextLevel() {
 
-        if (ball2 == ball){
+        if (ball2 == ball) {
             initArena();
         }
 
@@ -269,73 +271,71 @@ public class GameScreen extends AbstractScreen {
 
 
     public void inputUpdate(float delta) {
-      /**  int horizontalForce = 0;
+        /**  int horizontalForce = 0;
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            horizontalForce -= 1;
+         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+         horizontalForce -= 1;
 
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            horizontalForce += 1;
+         }
+         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+         horizontalForce += 1;
 
-        }
+         }
 
-        if (Gdx.input.isKeyJustPressed((Input.Keys.DOWN))) {
-            ball.getFixtureList();
-            ball.getPosition();
+         if (Gdx.input.isKeyJustPressed((Input.Keys.DOWN))) {
+         ball.getFixtureList();
+         ball.getPosition();
 
-        }
-        if (Gdx.input.isKeyJustPressed((Input.Keys.UP))) {
-            ball.applyForceToCenter(0, 500, false);
-        }
+         }
+         if (Gdx.input.isKeyJustPressed((Input.Keys.UP))) {
+         ball.applyForceToCenter(0, 500, false);
+         }
 
-        ball.setLinearVelocity(horizontalForce * 5, ball.getLinearVelocity().y);
+         ball.setLinearVelocity(horizontalForce * 5, ball.getLinearVelocity().y);
 
-        // Input para que salga del juego en android con la tecla BackKey
-        if (Gdx.input.isCatchBackKey()) {
-            Gdx.app.exit();
-        }
-        //Input para que cuando toques la pantalla del celular  la Pelota salte
-        if (Gdx.input.isTouched()) {
-            ball.applyForceToCenter(60f, 100f, false);
-            //ball.applyForceToCenter(0, 500, false);
+         // Input para que salga del juego en android con la tecla BackKey
+         if (Gdx.input.isCatchBackKey()) {
+         Gdx.app.exit();
+         }
+         //Input para que cuando toques la pantalla del celular  la Pelota salte
+         if (Gdx.input.isTouched()) {
+         ball.applyForceToCenter(60f, 100f, false);
+         //ball.applyForceToCenter(0, 500, false);
 
-            // process user input
-            if (Gdx.input.isTouched()) {
-                Vector3 touchPos = new Vector3();
-                touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-                camera.unproject(touchPos);
-                ball2.getPosition().x = touchPos.x - 64 / 2;
-            }
+         // process user input
+         if (Gdx.input.isTouched()) {
+         Vector3 touchPos = new Vector3();
+         touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+         camera.unproject(touchPos);
+         ball2.getPosition().x = touchPos.x - 64 / 2;
+         }
 
-            // Will Return whether the screen is currently touched
-            boolean firstFingerTouching = Gdx.input.isTouched(0);
-            boolean secondFingerTouching = Gdx.input.isTouched(1);
-            boolean thirdFingerTouching = Gdx.input.isTouched(2);
+         // Will Return whether the screen is currently touched
+         boolean firstFingerTouching = Gdx.input.isTouched(0);
+         boolean secondFingerTouching = Gdx.input.isTouched(1);
+         boolean thirdFingerTouching = Gdx.input.isTouched(2);
 
-            // Will return whether the screen has just been touched
-            boolean justTouched = Gdx.input.justTouched();
+         // Will return whether the screen has just been touched
+         boolean justTouched = Gdx.input.justTouched();
 
-            int firstX = Gdx.input.getX();
-            int firstY = Gdx.input.getY();
-
-
-            //Gdx.input.setInputProcessor(new SimplerTouchTest());
+         int firstX = Gdx.input.getX();
+         int firstY = Gdx.input.getY();
 
 
-            //inputProcessor = new SimplerTouchTest();
-            //Gdx.input.setInputProcessor(inputProcessor);
-
-            //SimplerTouchTest inputProcessor = new SimplerTouchTest();
-            //Gdx.input.setInputProcessor(inputProcessor);
+         //Gdx.input.setInputProcessor(new SimplerTouchTest());
 
 
-        }
+         //inputProcessor = new SimplerTouchTest();
+         //Gdx.input.setInputProcessor(inputProcessor);
 
-*/
+         //SimplerTouchTest inputProcessor = new SimplerTouchTest();
+         //Gdx.input.setInputProcessor(inputProcessor);
+
+
+         }
+
+         */
     }
-
-
 
 
     /**
