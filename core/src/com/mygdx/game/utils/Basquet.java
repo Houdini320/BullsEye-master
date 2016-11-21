@@ -15,7 +15,6 @@ import static com.mygdx.game.utils.Constants.PPM;
  */
 public final class Basquet {
 
-
     //Body base, lat1, lat2, goal;
 
 
@@ -49,6 +48,21 @@ public final class Basquet {
         return bBody;
 
         //bBody.getFixtureList().get(0).setUserData();
+
+    }
+
+    public void hit (){
+        System.out.println("he sido golpeado");
+    }
+
+    public void trigger (){
+        System.out.println("TRIGGERED");
+        //  triggerBody.applyAngularImpulse(2f, false);
+
+    }
+    public void untrigger (){
+        System.out.println("UNTRIGGERED");
+        //  triggerBody.applyAngularImpulse(2f, false);
 
     }
     //public void createBasquet (World world, Body[] boxes) {

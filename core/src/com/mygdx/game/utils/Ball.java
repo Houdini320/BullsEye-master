@@ -71,7 +71,11 @@ import static com.mygdx.game.utils.Constants.PPM;
         //  triggerBody.applyAngularImpulse(2f, false);
 
     }
+    public void untrigger (){
+        System.out.println("UNTRIGGERED");
+        //  triggerBody.applyAngularImpulse(2f, false);
 
+    }
 
 
   /**  public Body getBody(){

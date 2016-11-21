@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.utils.B2DBodyBuilder;
 import com.mygdx.game.utils.Ball;
+import com.mygdx.game.utils.Basquet;
 
 /**
  * Created by Houdini on 2/11/2016.
@@ -20,34 +21,43 @@ public class MyContactListener implements ContactListener {
         Fixture fa = contact.getFixtureA();
         Fixture fb = contact.getFixtureB();
 
-                if (fa == null || fb == null) return;
-                if (fa.getUserData() == null || fb.getUserData() == null) return;
+        if (fa == null || fb == null) return;
+        if (fa.getUserData() == null || fb.getUserData() == null) return;
 
 
-        if (isContact (fa, fb)) {
-            B2DBodyBuilder tba = (B2DBodyBuilder) fa.getUserData();
-            Ball tbb = (Ball) fb.getUserData();
+        if (isContact(fa, fb)) {
+            B2DBodyBuilder cuerpo;
+            Ball ball2;
+            if (fa.getUserData() instanceof Basquet) {
+                cuerpo = (B2DBodyBuilder) fa.getUserData();
+                ball2 = (Ball) fb.getUserData();
+            } else {
+                cuerpo = (B2DBodyBuilder) fb.getUserData();
+                ball2 = (Ball) fa.getUserData();
+            }
 
-            tba.hit();
+
+            cuerpo.hit();
+            ball2.hit();
         }
 
-        if (isSensorContact(fa, fb)){
-            B2DBodyBuilder sensor;
+        if (isSensorContact(fa, fb)) {
+            Basquet sensor;
             Ball ball2;
-            if(fa.getUserData()instanceof B2DBodyBuilder){
-                sensor = (B2DBodyBuilder) fa.getUserData();
+            if (fa.getUserData() instanceof Basquet) {
+                sensor = (Basquet) fa.getUserData();
                 ball2 = (Ball) fb.getUserData();
-            }
-            else {
-                sensor = (B2DBodyBuilder) fb.getUserData();
+            } else {
+                sensor = (Basquet) fb.getUserData();
                 ball2 = (Ball) fa.getUserData();
             }
             sensor.hit();
             sensor.trigger();
+            ball2.trigger();
 
         }
 
-        System.out.println("A collision happened!");
+         System.out.println("A collision happened!");
 
     }
 
@@ -59,6 +69,21 @@ public class MyContactListener implements ContactListener {
 
         if (fa == null || fb == null) return;
         if (fa.getUserData() == null || fb.getUserData() == null) return;
+
+        if (isSensorContact(fa, fb)) {
+            Basquet sensor;
+            Ball ball2;
+            if (fa.getUserData() instanceof Basquet) {
+                sensor = (Basquet) fa.getUserData();
+                ball2 = (Ball) fb.getUserData();
+            } else {
+                sensor = (Basquet) fb.getUserData();
+                ball2 = (Ball) fa.getUserData();
+            }
+            sensor.hit();
+            sensor.untrigger();
+            ball2.untrigger();
+        }
 
         System.out.println("A collision stoped!");
 
@@ -75,10 +100,10 @@ public class MyContactListener implements ContactListener {
 
     }
 
-    private boolean isContact (Fixture a, Fixture b) {
+    private boolean isContact(Fixture a, Fixture b) {
         //Para diferenciar entre dos Bodies distintos
-        if (a.getUserData() instanceof B2DBodyBuilder || b.getUserData() instanceof Ball){
-            if (a.getUserData()instanceof Ball || b.getUserData() instanceof B2DBodyBuilder){
+        if (a.getUserData() instanceof B2DBodyBuilder || b.getUserData() instanceof B2DBodyBuilder) {
+            if (a.getUserData() instanceof Ball || b.getUserData() instanceof Ball) {
                 return true;
             }
         }
@@ -87,9 +112,10 @@ public class MyContactListener implements ContactListener {
 
 
     }
-    private boolean isSensorContact (Fixture a, Fixture b){
-        if (a.getUserData() instanceof  B2DBodyBuilder || b.getUserData() instanceof  B2DBodyBuilder ){
-            if (a.getUserData() instanceof  Ball || b.getUserData() instanceof  Ball ){
+
+    private boolean isSensorContact(Fixture a, Fixture b) {
+        if (a.getUserData() instanceof Basquet || b.getUserData() instanceof Basquet) {
+            if (a.getUserData() instanceof Ball || b.getUserData() instanceof Ball) {
                 return true;
             }
         }

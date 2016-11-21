@@ -115,5 +115,9 @@ public final class B2DBodyBuilder {
       //  triggerBody.applyAngularImpulse(2f, false);
 
     }
+    public void untrigger (){
+        System.out.println("UNTRIGGERED");
+        //  triggerBody.applyAngularImpulse(2f, false);
 
+    }
 }
