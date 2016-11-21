@@ -14,7 +14,7 @@ import static com.mygdx.game.utils.Constants.PPM;
  */
 
 
-    public final class Ball  {
+public final class Ball {
 
     //private Body body;
     //private Fixture fixture;
@@ -22,12 +22,11 @@ import static com.mygdx.game.utils.Constants.PPM;
     //public final float RADIUS = .2f;
 
 
-        private Ball (){}
+    private Ball() {
+    }
 
 
-
-
-    public static Body createCircle (World world, int x, int y, int rad, boolean isStatic, boolean isSensor){
+    public static Body createCircle(World world, int x, int y, int rad, boolean isStatic, boolean isSensor) {
 
         Body bBody;
         BodyDef def = new BodyDef();
@@ -40,7 +39,7 @@ import static com.mygdx.game.utils.Constants.PPM;
         bBody = world.createBody(def);
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(rad  / 2f / PPM);
+        shape.setRadius(rad / 2f / PPM);
 
         FixtureDef fDef = new FixtureDef();
         fDef.shape = shape;
@@ -50,7 +49,7 @@ import static com.mygdx.game.utils.Constants.PPM;
         // you can use like a contact world listener for a body goes to a goal
         fDef.isSensor = isSensor;
 
-      //  bBody.createFixture(shape, 1.0f);
+        //  bBody.createFixture(shape, 1.0f);
         //utilizando esta sentencia tiene Fixture pero la textura no sigue la pelota
         //world.createBody(def).createFixture(fDef);
         //Utilizando esta sentencia la pelota rebota y la tectura la sigue pero crashea el joint :/
@@ -62,28 +61,29 @@ import static com.mygdx.game.utils.Constants.PPM;
         return bBody;
     }
 
-    public void hit (){
+    public void hit() {
         System.out.println("he sido golpeado");
     }
 
-    public void trigger (){
+    public void trigger() {
         System.out.println("TRIGGERED");
         //  triggerBody.applyAngularImpulse(2f, false);
 
     }
-    public void untrigger (){
+
+    public void untrigger() {
         System.out.println("UNTRIGGERED");
         //  triggerBody.applyAngularImpulse(2f, false);
 
     }
 
 
-  /**  public Body getBody(){
-        return body;
-    }
+    /**  public Body getBody(){
+     return body;
+     }
 
-    public Fixture getFixture(){
-        return fixture;
+     public Fixture getFixture(){
+     return fixture;
 
-*/
+     */
 }
