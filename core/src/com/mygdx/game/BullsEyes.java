@@ -110,6 +110,12 @@ public class BullsEyes extends Game implements InputProcessor {
 		jointDef.bodyA = GameScreen.ball;
 		jointDef.collideConnected = true;
 		jointDef.maxForce = 5000;
+		//DEFINICION DE UN JOINT
+		//DistanceJointDef defJoint = new DistanceJointDef ();
+		//defJoint.length = 0;
+		//defJoint.initialize(bodyA, bodyB, new Vector2(0,0), new Vector2(128, 0));
+
+		//DistanceJoint joint = (DistanceJoint) world.createJoint(defJoints);
 
 
 		//Input para que salga de la Pantalla con la tecla Escape

@@ -48,7 +48,7 @@ public class GameScreen extends AbstractScreen {
 
     //Batch
     SpriteBatch batch;
-    Texture tex, tacho;
+    Texture tex, tacho, box1;
 
     //Musica
     Music fondoMusic;
@@ -101,6 +101,7 @@ public class GameScreen extends AbstractScreen {
         rnd = new Random();
         batch = new SpriteBatch();
         tex = new Texture("ball.png");
+        box1 = new Texture("caja1.png");
        // tacho = new Texture("tacho2x64");
 
 
@@ -166,6 +167,7 @@ public class GameScreen extends AbstractScreen {
 
         batch.begin();
         batch.draw(tex, ball2.getPosition().x * PPM - (tex.getWidth() / 2), ball2.getPosition().y * PPM - (tex.getHeight() / 2));
+        batch.draw(box1, obstacle.getPosition().x * PPM - (box1.getWidth() / 2), obstacle.getPosition().y * PPM - (box1.getHeight() / 2));
         //batch.draw(tacho, createBasquet(600, 100) * PPM - (tacho.getWidth() / 2), createBasquet().getPosition().y * PPM - (tacho.getHeight() / 2));
         batch.end();
 
@@ -225,7 +227,7 @@ public class GameScreen extends AbstractScreen {
 
         //Crea la Pelota del Player de la clase Ball
         ball2 = Ball.createCircle(world, 100, 200, 50, false, false);
-        //ball2.getFixtureList().get(1).setUserData(ball2);
+       // ball2.getFixtureList().get(0).getUserData();
 
 
     }
@@ -266,7 +268,14 @@ public class GameScreen extends AbstractScreen {
         }
 
     }
+    public void hit (){
+        System.out.println("he sido golpeado");
+    }
 
+    public void trigger () {
+        System.out.println("TRIGGERED");
+        //  triggerBody.applyAngularImpulse(2f, false);
+    }
 
     public void inputUpdate(float delta) {
       /**  int horizontalForce = 0;
@@ -334,9 +343,38 @@ public class GameScreen extends AbstractScreen {
 
 */
     }
+/**  METODO DEL PONGO PARA LOS PUNTOS Y RESETEAR LA PANTALLA
+    // Si la pelota se pasa de la posición del jugador, marca punto el otro.
 
+    if(ball.getBody().getPosition().x+2 < player.getBody().getPosition().x && scored == 0){
+        scoreP2+=1;
+        scored = 2;
+    }
+    else if (ball.getBody().getPosition().x-2 > player2.getBody().getPosition().x && scored == 0){
+        scoreP1+=1;
+        scored = 1;
+    }
 
+    // Reseteamos la escena a sus valores originales cuando se marca un punto
+    if (scored != 0){
+        ball.getBody().setTransform(0, 0, 0);
+        player.getBody().setTransform(-9,0,0);
+        player2.getBody().setTransform(9,0,0);
+        ball.getBody().setLinearVelocity(0, 0);
+    }
 
+    // Aplicar fuerza a la pelota dependiendo de en qué posición se encuentre respecto al palote
+    if(angle != 0){
+        ball.getBody().setLinearVelocity(0,0);
+        ball.getBody().applyForceToCenter((float)(module*Math.cos(angle)),(float)(module*Math.sin(angle)), true);
+        angle = 0;
+        AssetsLoader.pong.play();
+    }
+
+    // Cuando algún jugador marca 10 puntos (a diferencia de 2) termina la partida
+    if((scoreP1 >= 10 || scoreP2 >=10) && Math.abs(scoreP1 - scoreP2) > 1){
+        end = true;
+*/
 
     /**
      * //Metodo para que la camara siga algun objeto o quede fija en alguna posicion

@@ -44,9 +44,9 @@ import static com.mygdx.game.utils.Constants.PPM;
 
         FixtureDef fDef = new FixtureDef();
         fDef.shape = shape;
-        fDef.density = .25f;
+        fDef.density = .5f;
         fDef.friction = .25f;
-        fDef.restitution = 1f;
+        fDef.restitution = .6f;
         // you can use like a contact world listener for a body goes to a goal
         fDef.isSensor = isSensor;
 
