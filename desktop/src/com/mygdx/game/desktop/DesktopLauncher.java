@@ -14,6 +14,7 @@ public class DesktopLauncher {
 		config.foregroundFPS = BullsEyes.APP_FPS;
 
 
+
 		new LwjglApplication(new BullsEyes(), config);
 	}
 }

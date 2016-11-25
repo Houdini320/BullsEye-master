@@ -5,6 +5,7 @@ package com.mygdx.game.screens;
  */
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,6 +20,7 @@ import com.mygdx.game.BullsEyes;
 import com.mygdx.game.handlers.MyContactListener;
 import com.mygdx.game.utils.B2DBodyBuilder;
 import com.mygdx.game.utils.Ball;
+import com.mygdx.game.utils.Ball.*;
 import com.mygdx.game.utils.Basquet;
 import com.mygdx.game.utils.Tacho;
 
@@ -37,15 +39,16 @@ public class GameScreen extends AbstractScreen {
     ShapeRenderer shapes;
 
     //Box2D
+
     public static World world;
     // World world;
     Box2DDebugRenderer b2dr;
 
     //Game Bodies
-    public static Body ball, ball2;
-    Body obstacle, obstacle2, obstacle3, obstacle4, obstacle5, rectangletacho;
+    public static Body ball;
+    Body obstacle, obstacle2, obstacle3, obstacle4, obstacle5;
     Body goal1, goal2, goal3, goal4;
-
+ public static Ball ball2 = new Ball();
 
     //Batch
     SpriteBatch batch;
@@ -152,6 +155,8 @@ Tacho tacho1,tacho2,tacho3,tacho4;
         fondoMusic.play();
 
 
+
+
         //update(Gdx.graphics.getDeltaTime());
 
         // tell the camera to update its matrices.
@@ -163,7 +168,7 @@ Tacho tacho1,tacho2,tacho3,tacho4;
 
 
         batch.begin();
-        batch.draw(tex, ball2.getPosition().x * PPM - (tex.getWidth() / 2), ball2.getPosition().y * PPM - (tex.getHeight() / 2));
+        batch.draw(tex, ball2.body.getPosition().x * PPM - (tex.getWidth() / 2), ball2.body.getPosition().y * PPM - (tex.getHeight() / 2));
         //batch.draw(tacho, createBasquet(600, 100) * PPM - (tacho.getWidth() / 2), createBasquet().getPosition().y * PPM - (tacho.getHeight() / 2));
         batch.end();
 
@@ -196,6 +201,7 @@ Tacho tacho1,tacho2,tacho3,tacho4;
     }
 
 
+
     private void initArena() {
         //Crea las paredes alrededor de la pantalla
         createWalls();
@@ -222,7 +228,10 @@ Tacho tacho1,tacho2,tacho3,tacho4;
         ball = B2DBodyBuilder.createCircle(world, 50, 100, 38, false, false);
 
         //Crea la Pelota del Player de la clase Ball
-        ball2 = Ball.createCircle(world, 100, 200, 50, false, false);
+        ball2.createCircle(world,100,200,50,false,false);
+
+
+        //ball2 = (world, 100, 200, 50, false, false)
         //ball2.getFixtureList().get(1).setUserData(ball2);
 
 // Creacion de los tachos
@@ -263,9 +272,7 @@ Tacho tacho1,tacho2,tacho3,tacho4;
 
     public void nextLevel() {
 
-        if (ball2 == ball) {
-            initArena();
-        }
+
 
     }
 
