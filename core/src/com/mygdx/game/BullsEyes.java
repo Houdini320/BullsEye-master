@@ -143,7 +143,7 @@ public class BullsEyes extends Game implements InputProcessor {
 		public boolean reportFixture(Fixture fixture) {
 			if (!fixture.testPoint(tp.x, tp.y))
 				return true;
-			jointDef.bodyB = GameScreen.ball2;
+			jointDef.bodyB = GameScreen.ball2.body;
 			//jointDef.bodyB = fixture.getBody();
 			jointDef.target.set(tp.x, tp.y);
 			joint = (MouseJoint) GameScreen.world.createJoint(jointDef);

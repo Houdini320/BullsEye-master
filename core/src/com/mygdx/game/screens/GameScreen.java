@@ -5,6 +5,7 @@ package com.mygdx.game.screens;
  */
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,7 +21,9 @@ import com.mygdx.game.handlers.MyContactListener;
 import com.mygdx.game.utils.B2DBodyBuilder;
 import com.mygdx.game.utils.Ball;
 import com.mygdx.game.utils.Basquet;
+import com.mygdx.game.utils.Tacho;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import static com.mygdx.game.utils.Constants.PPM;
@@ -36,15 +39,16 @@ public class GameScreen extends AbstractScreen {
     ShapeRenderer shapes;
 
     //Box2D
+
     public static World world;
    // World world;
     Box2DDebugRenderer b2dr;
 
     //Game Bodies
-    public static Body ball, ball2;
-    Body obstacle, obstacle2, obstacle3, obstacle4, obstacle5, rectangletacho;
+    public static Body ball;
+    Body obstacle, obstacle2, obstacle3, obstacle4, obstacle5;
     Body goal1, goal2, goal3, goal4;
-
+ public static Ball ball2 = new Ball();
 
     //Batch
     SpriteBatch batch;
@@ -56,7 +60,8 @@ public class GameScreen extends AbstractScreen {
     //Random
     Random rnd;
 
-
+    //Tacho
+Tacho tacho1,tacho2,tacho3,tacho4;
     //private OrthogonalTiledMapRenderer tmr;
     // private TiledMap map;
 
@@ -103,8 +108,6 @@ public class GameScreen extends AbstractScreen {
         tex = new Texture("ball.png");
         box1 = new Texture("caja1.png");
        // tacho = new Texture("tacho2x64");
-
-
 
 
         Gdx.input.setInputProcessor(app);
@@ -200,11 +203,12 @@ public class GameScreen extends AbstractScreen {
     }
 
 
+
     private void initArena() {
         //Crea las paredes alrededor de la pantalla
         createWalls();
         //crea el canasto desde el array
-        createBasquet(600,110);
+        createBasquet(600, 110);
 
 
         //Crea los Objetos "Obstaculos" Estaticos o Dinamicos de la Clase B2DBodyBuilder
@@ -226,10 +230,18 @@ public class GameScreen extends AbstractScreen {
         ball = B2DBodyBuilder.createCircle(world, 50, 100, 38, false, false);
 
         //Crea la Pelota del Player de la clase Ball
-        ball2 = Ball.createCircle(world, 100, 200, 50, false, false);
-       // ball2.getFixtureList().get(0).getUserData();
+        ball2.createCircle(world,100,200,50,false,false);
 
 
+        //ball2 = (world, 100, 200, 50, false, false)
+        //ball2.getFixtureList().get(1).setUserData(ball2);
+
+// Creacion de los tachos
+        tacho1 = new Tacho(world,600,110);
+/*        tacho2 = new Tacho(world,500,110);
+        tacho3 = new Tacho(world,400,110);
+        tacho4 = new Tacho(world,300,110);
+*/
     }
 
     //Metodo con las indicaciones de los vectores de las paredes
@@ -248,16 +260,15 @@ public class GameScreen extends AbstractScreen {
     private void createBasquet(float posX, float posY) {
         //Formar tacho con los obstaculos
         float x, y;
-        Body[] boxes  = new Body[4];
+        Body[] boxes2 = new Body[4];
 // posX y posY es el centro del tacho el tacho tiene una altura de 185 y un ancho de 100
-        x = posX/PPM;
-        y = posY/PPM;
+        x = posX / PPM;
+        y = posY / PPM;
         //Array<Body> boxes = new Array<Body>(4);
-        boxes[0] = Basquet.createBos(world, x * PPM, y * PPM - 85, 100, 15, true, false);
-        boxes[1] = Basquet.createBos(world, x * PPM - 45, y * PPM + 7.5f, 10, 170, true, false);
-        boxes[2] = Basquet.createBos(world, x * PPM + 45, y * PPM + 7.5f, 10, 170, true, false);
-        boxes[3] = Basquet.createBos(world, x * PPM, y * PPM - 52, 80, 50, true, true);
-
+        boxes2[0] = Basquet.createBos(world, x * PPM, y * PPM - 85, 100, 15, true, false);
+        boxes2[1] = Basquet.createBos(world, x * PPM - 45, y * PPM + 7.5f, 10, 170, true, false);
+        boxes2[2] = Basquet.createBos(world, x * PPM + 45, y * PPM + 7.5f, 10, 170, true, false);
+        boxes2[3] = Basquet.createBos(world, x * PPM, y * PPM - 52, 80, 50, true, true);
 
     }
 
@@ -268,14 +279,7 @@ public class GameScreen extends AbstractScreen {
         }
 
     }
-    public void hit (){
-        System.out.println("he sido golpeado");
-    }
 
-    public void trigger () {
-        System.out.println("TRIGGERED");
-        //  triggerBody.applyAngularImpulse(2f, false);
-    }
 
     public void inputUpdate(float delta) {
       /**  int horizontalForce = 0;

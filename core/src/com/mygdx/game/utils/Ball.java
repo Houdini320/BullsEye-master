@@ -14,22 +14,20 @@ import static com.mygdx.game.utils.Constants.PPM;
  */
 
 
-    public final class Ball  {
+public final class Ball {
 
-    //private Body body;
+    public Body body;
     //private Fixture fixture;
     //private World world;
     //public final float RADIUS = .2f;
 
 
-        private Ball (){}
+    public Ball() {
+    }
 
 
+    public void createCircle(World world, int x, int y, int rad, boolean isStatic, boolean isSensor) {
 
-
-    public static Body createCircle (World world, int x, int y, int rad, boolean isStatic, boolean isSensor){
-
-        Body bBody;
         BodyDef def = new BodyDef();
         if (isStatic)
             def.type = BodyDef.BodyType.StaticBody;
@@ -37,10 +35,10 @@ import static com.mygdx.game.utils.Constants.PPM;
             def.type = BodyDef.BodyType.DynamicBody;
         def.position.set(x / PPM, y / PPM);
         def.fixedRotation = false;
-        bBody = world.createBody(def);
+        this.body = world.createBody(def);
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(rad  / 2f / PPM);
+        shape.setRadius(rad / 2f / PPM);
 
         FixtureDef fDef = new FixtureDef();
         fDef.shape = shape;
@@ -54,7 +52,7 @@ import static com.mygdx.game.utils.Constants.PPM;
         //utilizando esta sentencia tiene Fixture pero la textura no sigue la pelota
         //world.createBody(def).createFixture(fDef);
         //Utilizando esta sentencia la pelota rebota y la tectura la sigue pero crashea el joint :/
-        bBody.createFixture(fDef).setUserData(bBody);
+        this.body.createFixture(fDef).setUserData(this);
         //this.bBody = world.createBody(def);
         //this.bBody.createFixture(fDef).setUserData(this);
         shape.dispose();
@@ -62,28 +60,29 @@ import static com.mygdx.game.utils.Constants.PPM;
         return bBody;
     }
 
-    public void hit (){
+    public void hit() {
         System.out.println("he sido golpeado");
     }
 
-    public void trigger (){
-        System.out.println("TRIGGERED");
-        //  triggerBody.applyAngularImpulse(2f, false);
-
-    }
-    public void untrigger (){
-        System.out.println("UNTRIGGERED");
+    public void trigger() {
+        System.out.println("TRIGGERED BALL");
         //  triggerBody.applyAngularImpulse(2f, false);
 
     }
 
+    public void untrigger() {
+        System.out.println("UNTRIGGERED BALL");
+        //  triggerBody.applyAngularImpulse(2f, false);
 
-  /**  public Body getBody(){
-        return body;
     }
 
-    public Fixture getFixture(){
-        return fixture;
 
-*/
+    /**  public Body getBody(){
+     return body;
+     }
+
+     public Fixture getFixture(){
+     return fixture;
+
+     */
 }
