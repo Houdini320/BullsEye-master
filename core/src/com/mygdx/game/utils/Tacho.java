@@ -15,7 +15,7 @@ import com.sun.org.apache.xpath.internal.operations.String;
  */
 
 public class Tacho {
-    public Body body;
+    public static Body body;
    // public String id;
 
     public Tacho(World world, float x, float y) {
@@ -31,11 +31,12 @@ public class Tacho {
         def.position.set(x / Constants.PPM, y / Constants.PPM);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(32 / Constants.PPM / 2, 32 / Constants.PPM / 2);
+        shape.setAsBox(80 / Constants.PPM / 2, 50 / Constants.PPM / 2);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1.0f;
+        fixtureDef.isSensor = true;
 
         this.body = world.createBody(def);
         this.body.createFixture(fixtureDef).setUserData(this);

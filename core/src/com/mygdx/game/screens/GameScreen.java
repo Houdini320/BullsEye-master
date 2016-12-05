@@ -5,16 +5,18 @@ package com.mygdx.game.screens;
  */
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.mygdx.game.BullsEyes;
 import com.mygdx.game.handlers.MyContactListener;
@@ -23,7 +25,6 @@ import com.mygdx.game.utils.Ball;
 import com.mygdx.game.utils.Basquet;
 import com.mygdx.game.utils.Tacho;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import static com.mygdx.game.utils.Constants.PPM;
@@ -32,23 +33,24 @@ import static com.mygdx.game.utils.Constants.PPM;
 public class GameScreen extends AbstractScreen {
 
 
-
     //Camera
     OrthographicCamera camera;
     ExtendViewport viewport;
     ShapeRenderer shapes;
+    Vector2 target;
+    Array<Vector2> focalPoints;
 
     //Box2D
 
     public static World world;
-   // World world;
+    // World world;
     Box2DDebugRenderer b2dr;
 
     //Game Bodies
     public static Body ball;
     Body obstacle, obstacle2, obstacle3, obstacle4, obstacle5;
     Body goal1, goal2, goal3, goal4;
- public static Ball ball2 = new Ball();
+    public static Ball ball2 = new Ball();
 
     //Batch
     SpriteBatch batch;
@@ -61,7 +63,7 @@ public class GameScreen extends AbstractScreen {
     Random rnd;
 
     //Tacho
-Tacho tacho1,tacho2,tacho3,tacho4;
+    Tacho tacho1, tacho2, tacho3, tacho4;
     //private OrthogonalTiledMapRenderer tmr;
     // private TiledMap map;
 
@@ -107,7 +109,7 @@ Tacho tacho1,tacho2,tacho3,tacho4;
         batch = new SpriteBatch();
         tex = new Texture("ball.png");
         box1 = new Texture("caja1.png");
-       // tacho = new Texture("tacho2x64");
+        tacho = new Texture("tacho2x64.png");
 
 
         Gdx.input.setInputProcessor(app);
@@ -133,7 +135,7 @@ Tacho tacho1,tacho2,tacho3,tacho4;
 
         inputUpdate(delta);
 
-        //cameraUpdate(delta);
+        cameraUpdate(delta);
 
         //tmr.setView(camera);
 
@@ -156,8 +158,6 @@ Tacho tacho1,tacho2,tacho3,tacho4;
         fondoMusic.play();
 
 
-
-
         //update(Gdx.graphics.getDeltaTime());
 
         // tell the camera to update its matrices.
@@ -169,9 +169,9 @@ Tacho tacho1,tacho2,tacho3,tacho4;
 
 
         batch.begin();
-        batch.draw(tex, ball2.getPosition().x * PPM - (tex.getWidth() / 2), ball2.getPosition().y * PPM - (tex.getHeight() / 2));
+        batch.draw(tex, ball2.body.getPosition().x * PPM - (tex.getWidth() / 2), ball2.body.getPosition().y * PPM - (tex.getHeight() / 2));
         batch.draw(box1, obstacle.getPosition().x * PPM - (box1.getWidth() / 2), obstacle.getPosition().y * PPM - (box1.getHeight() / 2));
-        //batch.draw(tacho, createBasquet(600, 100) * PPM - (tacho.getWidth() / 2), createBasquet().getPosition().y * PPM - (tacho.getHeight() / 2));
+        batch.draw(tacho, tacho1.body.getPosition().x * PPM - (tacho.getWidth() / 2), tacho1.body.getPosition().y + 3 * PPM - (tacho.getHeight() / 2));
         batch.end();
 
         //tmr.render();
@@ -203,7 +203,6 @@ Tacho tacho1,tacho2,tacho3,tacho4;
     }
 
 
-
     private void initArena() {
         //Crea las paredes alrededor de la pantalla
         createWalls();
@@ -230,15 +229,15 @@ Tacho tacho1,tacho2,tacho3,tacho4;
         ball = B2DBodyBuilder.createCircle(world, 50, 100, 38, false, false);
 
         //Crea la Pelota del Player de la clase Ball
-        ball2.createCircle(world,100,200,50,false,false);
+        ball2.createCircle(world, 100, 200, 50, false, false);
 
 
         //ball2 = (world, 100, 200, 50, false, false)
         //ball2.getFixtureList().get(1).setUserData(ball2);
 
 // Creacion de los tachos
-        tacho1 = new Tacho(world,600,110);
-/*        tacho2 = new Tacho(world,500,110);
+        tacho1 = new Tacho(world, 600, 60);
+/*      tacho2 = new Tacho(world,500,110);
         tacho3 = new Tacho(world,400,110);
         tacho4 = new Tacho(world,300,110);
 */
@@ -250,8 +249,8 @@ Tacho tacho1,tacho2,tacho3,tacho4;
         Vector2[] verts = new Vector2[5];
         verts[0] = new Vector2(0 / PPM, 0);
         verts[1] = new Vector2(camera.viewportWidth / PPM, 0);
-        verts[2] = new Vector2(camera.viewportWidth / PPM, 600 / PPM);
-        verts[3] = new Vector2(0 / PPM, 600 / PPM);
+        verts[2] = new Vector2(camera.viewportWidth / PPM, 900 / PPM);
+        verts[3] = new Vector2(0 / PPM, 900 / PPM);
         verts[4] = new Vector2(0 / PPM, 0 / PPM);
         B2DBodyBuilder.createChainShape(world, verts);
 
@@ -268,141 +267,159 @@ Tacho tacho1,tacho2,tacho3,tacho4;
         boxes2[0] = Basquet.createBos(world, x * PPM, y * PPM - 85, 100, 15, true, false);
         boxes2[1] = Basquet.createBos(world, x * PPM - 45, y * PPM + 7.5f, 10, 170, true, false);
         boxes2[2] = Basquet.createBos(world, x * PPM + 45, y * PPM + 7.5f, 10, 170, true, false);
-        boxes2[3] = Basquet.createBos(world, x * PPM, y * PPM - 52, 80, 50, true, true);
-
-    }
-
-    public void nextLevel(){
-
-        if (ball2 == ball){
-            initArena();
-        }
+        // boxes2[3] = Basquet.createBos(world, x * PPM, y * PPM - 52, 80, 50, true, true);
 
     }
 
 
     public void inputUpdate(float delta) {
-      /**  int horizontalForce = 0;
+        /**  int horizontalForce = 0;
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            horizontalForce -= 1;
+         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+         horizontalForce -= 1;
 
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            horizontalForce += 1;
+         }
+         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+         horizontalForce += 1;
 
-        }
+         }
 
-        if (Gdx.input.isKeyJustPressed((Input.Keys.DOWN))) {
-            ball.getFixtureList();
-            ball.getPosition();
+         if (Gdx.input.isKeyJustPressed((Input.Keys.DOWN))) {
+         ball.getFixtureList();
+         ball.getPosition();
 
-        }
-        if (Gdx.input.isKeyJustPressed((Input.Keys.UP))) {
-            ball.applyForceToCenter(0, 500, false);
-        }
+         }
+         if (Gdx.input.isKeyJustPressed((Input.Keys.UP))) {
+         ball.applyForceToCenter(0, 500, false);
+         }
 
-        ball.setLinearVelocity(horizontalForce * 5, ball.getLinearVelocity().y);
+         ball.setLinearVelocity(horizontalForce * 5, ball.getLinearVelocity().y);
 
-        // Input para que salga del juego en android con la tecla BackKey
-        if (Gdx.input.isCatchBackKey()) {
-            Gdx.app.exit();
-        }
-        //Input para que cuando toques la pantalla del celular  la Pelota salte
-        if (Gdx.input.isTouched()) {
-            ball.applyForceToCenter(60f, 100f, false);
-            //ball.applyForceToCenter(0, 500, false);
+         // Input para que salga del juego en android con la tecla BackKey
+         if (Gdx.input.isCatchBackKey()) {
+         Gdx.app.exit();
+         }
+         //Input para que cuando toques la pantalla del celular  la Pelota salte
+         if (Gdx.input.isTouched()) {
+         ball.applyForceToCenter(60f, 100f, false);
+         //ball.applyForceToCenter(0, 500, false);
 
-            // process user input
-            if (Gdx.input.isTouched()) {
-                Vector3 touchPos = new Vector3();
-                touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-                camera.unproject(touchPos);
-                ball2.getPosition().x = touchPos.x - 64 / 2;
-            }
+         // process user input
+         if (Gdx.input.isTouched()) {
+         Vector3 touchPos = new Vector3();
+         touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+         camera.unproject(touchPos);
+         ball2.getPosition().x = touchPos.x - 64 / 2;
+         }
 
-            // Will Return whether the screen is currently touched
-            boolean firstFingerTouching = Gdx.input.isTouched(0);
-            boolean secondFingerTouching = Gdx.input.isTouched(1);
-            boolean thirdFingerTouching = Gdx.input.isTouched(2);
+         // Will Return whether the screen is currently touched
+         boolean firstFingerTouching = Gdx.input.isTouched(0);
+         boolean secondFingerTouching = Gdx.input.isTouched(1);
+         boolean thirdFingerTouching = Gdx.input.isTouched(2);
 
-            // Will return whether the screen has just been touched
-            boolean justTouched = Gdx.input.justTouched();
+         // Will return whether the screen has just been touched
+         boolean justTouched = Gdx.input.justTouched();
 
-            int firstX = Gdx.input.getX();
-            int firstY = Gdx.input.getY();
-
-
-            //Gdx.input.setInputProcessor(new SimplerTouchTest());
+         int firstX = Gdx.input.getX();
+         int firstY = Gdx.input.getY();
 
 
-            //inputProcessor = new SimplerTouchTest();
-            //Gdx.input.setInputProcessor(inputProcessor);
-
-            //SimplerTouchTest inputProcessor = new SimplerTouchTest();
-            //Gdx.input.setInputProcessor(inputProcessor);
+         //Gdx.input.setInputProcessor(new SimplerTouchTest());
 
 
-        }
+         //inputProcessor = new SimplerTouchTest();
+         //Gdx.input.setInputProcessor(inputProcessor);
 
-*/
+         //SimplerTouchTest inputProcessor = new SimplerTouchTest();
+         //Gdx.input.setInputProcessor(inputProcessor);
+
+
+         }
+
+         */
     }
-/**  METODO DEL PONGO PARA LOS PUNTOS Y RESETEAR LA PANTALLA
-    // Si la pelota se pasa de la posición del jugador, marca punto el otro.
-
-    if(ball.getBody().getPosition().x+2 < player.getBody().getPosition().x && scored == 0){
-        scoreP2+=1;
-        scored = 2;
-    }
-    else if (ball.getBody().getPosition().x-2 > player2.getBody().getPosition().x && scored == 0){
-        scoreP1+=1;
-        scored = 1;
-    }
-
-    // Reseteamos la escena a sus valores originales cuando se marca un punto
-    if (scored != 0){
-        ball.getBody().setTransform(0, 0, 0);
-        player.getBody().setTransform(-9,0,0);
-        player2.getBody().setTransform(9,0,0);
-        ball.getBody().setLinearVelocity(0, 0);
-    }
-
-    // Aplicar fuerza a la pelota dependiendo de en qué posición se encuentre respecto al palote
-    if(angle != 0){
-        ball.getBody().setLinearVelocity(0,0);
-        ball.getBody().applyForceToCenter((float)(module*Math.cos(angle)),(float)(module*Math.sin(angle)), true);
-        angle = 0;
-        AssetsLoader.pong.play();
-    }
-
-    // Cuando algún jugador marca 10 puntos (a diferencia de 2) termina la partida
-    if((scoreP1 >= 10 || scoreP2 >=10) && Math.abs(scoreP1 - scoreP2) > 1){
-        end = true;
-*/
 
     /**
-     * //Metodo para que la camara siga algun objeto o quede fija en alguna posicion
-     * public void cameraUpdate(float delta) {
-     * float w = Gdx.graphics.getWidth();
-     * float h = Gdx.graphics.getHeight();
-     * Vector3 position = camera.position;
-     * // hacer que la camara se demore un ratito en seguir al perdonaje
-     * //a + (b - a) * lerp
-     * // b = target
-     * // a = current camera position
-     * //position.x = camera.position.x + (platform.getPosition().x * PPM - camera.position.x) * .1f;
-     * //position.y = camera.position.y + (platform.getPosition().y * PPM - camera.position.y) * .1f;
-     * Vector2 p = obstacle.getPosition();
-     * position.x = w / SCALE / 2;
-     * position.y = h / SCALE / 2;
-     * camera.position.set(position);
+     * METODO DEL PONGO PARA LOS PUNTOS Y RESETEAR LA PANTALLA
+     * // Si la pelota se pasa de la posición del jugador, marca punto el otro.
      * <p/>
-     * <p/>
-     * camera.update();
-     * <p/>
-     * <p/>
+     * if(ball.getBody().getPosition().x+2 < player.getBody().getPosition().x && scored == 0){
+     * scoreP2+=1;
+     * scored = 2;
      * }
+     * else if (ball.getBody().getPosition().x-2 > player2.getBody().getPosition().x && scored == 0){
+     * scoreP1+=1;
+     * scored = 1;
+     * }
+     * <p/>
+     * // Reseteamos la escena a sus valores originales cuando se marca un punto
+     * if (scored != 0){
+     * ball.getBody().setTransform(0, 0, 0);
+     * player.getBody().setTransform(-9,0,0);
+     * player2.getBody().setTransform(9,0,0);
+     * ball.getBody().setLinearVelocity(0, 0);
+     * }
+     * <p/>
+     * // Aplicar fuerza a la pelota dependiendo de en qué posición se encuentre respecto al palote
+     * if(angle != 0){
+     * ball.getBody().setLinearVelocity(0,0);
+     * ball.getBody().applyForceToCenter((float)(module*Math.cos(angle)),(float)(module*Math.sin(angle)), true);
+     * angle = 0;
+     * AssetsLoader.pong.play();
+     * }
+     * <p/>
+     * // Cuando algún jugador marca 10 puntos (a diferencia de 2) termina la partida
+     * if((scoreP1 >= 10 || scoreP2 >=10) && Math.abs(scoreP1 - scoreP2) > 1){
+     * end = true;
      */
+
+
+    //Metodo para que la camara siga algun objeto o quede fija en alguna posicion
+    public void cameraUpdate(float delta) {
+        // float w = Gdx.graphics.getWidth();
+        // float h = Gdx.graphics.getHeight();
+        Vector3 position = camera.position;
+        // hacer que la camara se demore un ratito en seguir al perdonaje
+        //a + (b - a) * lerp
+        // b = target
+        // a = current camera position
+        // position.x = camera.viewportWidth / 2 + (ball2.body.getPosition().x * PPM - camera.position.x) * .1f;
+        //position.y = camera.viewportHeight / 2 + (ball2.body.getPosition().y * PPM - camera.position.y) * .1f;
+        //Vector2 p = obstacle.getPosition();
+        //position.x = ball2.body.getPosition().x * PPM;
+        //position.y = ball2.body.getPosition().y * PPM;
+        position.x = camera.viewportWidth / 2;
+        position.y = camera.viewportHeight / 2;
+        if (ball2.body.getPosition().y > 19) {
+            camera.position.y = ball2.body.getPosition().y * PPM ;
+            //camera.position.x = ball2.body.getPosition().x * PPM ;
+        }
+
+        camera.position.set(position);
+
+        camera.update();
+
+        // searchFocalPoints(camera, focalPoints, ball2.body.getPosition().scl(PPM), 300);
+    }
+
+    public static void lerpToTarget(Camera camera, Vector2 target) {
+        Vector3 position = camera.position;
+        position.x = camera.position.x + (target.x - camera.position.x) * .1f;
+        position.y = camera.position.y + (target.y - camera.position.y) * .1f;
+        camera.position.set(position);
+        camera.update();
+    }
+
+    public static boolean searchFocalPoints(Camera camera, Array<Vector2> focalPoints, Vector2 target, float threshold) {
+        for (Vector2 point : focalPoints) {
+            if (target.dst(point) > threshold) {
+                lerpToTarget(camera, point);
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void dispose() {
         super.dispose();

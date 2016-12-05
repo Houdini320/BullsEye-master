@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -64,6 +65,7 @@ public class BullsEyes extends Game implements InputProcessor {
 
 	MouseJointDef jointDef;
 	MouseJoint joint;
+	DistanceJointDef distanceJointDef;
 
 
 	@Override
@@ -110,6 +112,22 @@ public class BullsEyes extends Game implements InputProcessor {
 		jointDef.bodyA = GameScreen.ball;
 		jointDef.collideConnected = true;
 		jointDef.maxForce = 5000;
+		jointDef.frequencyHz = 1f;
+
+
+		distanceJointDef = new DistanceJointDef();
+
+		distanceJointDef.bodyA = GameScreen.ball;
+		distanceJointDef.bodyB = GameScreen.ball2.body;
+		//distanceJointDef.localAnchorA.set(new Vector2(10, 0));
+		//distanceJointDef.initialize(GameScreen.ball, GameScreen.ball2.body, new Vector2(10,0), new Vector2(128, 0));
+		distanceJointDef.collideConnected = true;
+		distanceJointDef.length = 1f;
+		//GameScreen.world.createJoint(distanceJointDef);
+
+
+
+
 		//DEFINICION DE UN JOINT
 		//DistanceJointDef defJoint = new DistanceJointDef ();
 		//defJoint.length = 0;
@@ -144,8 +162,15 @@ public class BullsEyes extends Game implements InputProcessor {
 			if (!fixture.testPoint(tp.x, tp.y))
 				return true;
 			jointDef.bodyB = GameScreen.ball2.body;
+			//tp.setLength(10);
+			tp.limit(20);
+			tp.limit2(20);
+			tp.clamp(0, 20);
+			tp.len(10, 10, 0);
 			//jointDef.bodyB = fixture.getBody();
 			jointDef.target.set(tp.x, tp.y);
+
+
 			joint = (MouseJoint) GameScreen.world.createJoint(jointDef);
 
 			return false;

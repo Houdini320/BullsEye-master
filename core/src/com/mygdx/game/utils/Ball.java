@@ -57,7 +57,7 @@ public final class Ball {
         //this.bBody.createFixture(fDef).setUserData(this);
         shape.dispose();
 
-        return bBody;
+       // return bBody;
     }
 
     public void hit() {
