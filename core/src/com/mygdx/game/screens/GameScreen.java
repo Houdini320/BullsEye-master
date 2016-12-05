@@ -169,9 +169,12 @@ public class GameScreen extends AbstractScreen {
 
 
         batch.begin();
-        batch.draw(tex, ball2.body.getPosition().x * PPM - (tex.getWidth() / 2), ball2.body.getPosition().y * PPM - (tex.getHeight() / 2));
+
         batch.draw(box1, obstacle.getPosition().x * PPM - (box1.getWidth() / 2), obstacle.getPosition().y * PPM - (box1.getHeight() / 2));
+        batch.draw(tex, ball2.body.getPosition().x * PPM - (tex.getWidth() / 2), ball2.body.getPosition().y * PPM - (tex.getHeight() / 2));
         batch.draw(tacho, tacho1.body.getPosition().x * PPM - (tacho.getWidth() / 2), tacho1.body.getPosition().y + 3 * PPM - (tacho.getHeight() / 2));
+
+
         batch.end();
 
         //tmr.render();

@@ -19,6 +19,7 @@ import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.mygdx.game.handlers.MyContactListener;
 import com.mygdx.game.managers.GameScreenManager;
 import com.mygdx.game.screens.GameOverScreen;
 import com.mygdx.game.screens.GameScreen;
@@ -91,7 +92,7 @@ public class BullsEyes extends Game implements InputProcessor {
 		this.setScreen(new MainMenuScreen(this));
 		// Inicia la pantalla de GameOver
 		// TODO FALTA CREAR EL IF PARA QUE APAREZCA AL FINAL LA PANTALLA GAMEOVER
-		//this.setScreen(new GameOverScreen(this));
+
 
 	}
 
@@ -140,6 +141,11 @@ public class BullsEyes extends Game implements InputProcessor {
 		if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
 			Gdx.app.exit();
 		}
+		if (MyContactListener.gameOver) {
+
+			this.setScreen(new GameOverScreen(this));
+		}
+
 	}
 	
 	@Override
@@ -163,10 +169,10 @@ public class BullsEyes extends Game implements InputProcessor {
 				return true;
 			jointDef.bodyB = GameScreen.ball2.body;
 			//tp.setLength(10);
-			tp.limit(20);
-			tp.limit2(20);
-			tp.clamp(0, 20);
-			tp.len(10, 10, 0);
+			//tp.limit(20);
+			//tp.limit2(20);
+			//tp.clamp(0, 20);
+			//tp.len(10, 10, 0);
 			//jointDef.bodyB = fixture.getBody();
 			jointDef.target.set(tp.x, tp.y);
 

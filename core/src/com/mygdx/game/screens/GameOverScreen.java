@@ -60,8 +60,8 @@ public class GameOverScreen extends AbstractScreen {
         b2dr = new Box2DDebugRenderer();
 
         //Dice donde se encuentran los archivos de la Fuente de GameOVer
-//        font = new BitmapFont(Gdx.files.internal("gameover.fnt"), Gdx.files.internal("gameover.png"), false);
-//        font2 = new BitmapFont(Gdx.files.internal("gameover25.fnt"), Gdx.files.internal("gameover25.png"), false);
+        font = new BitmapFont(Gdx.files.internal("gameover.fnt"), Gdx.files.internal("gameover.png"), false);
+       font2 = new BitmapFont(Gdx.files.internal("gameover25.fnt"), Gdx.files.internal("gameover25.png"), false);
         batch = new SpriteBatch();
     }
 

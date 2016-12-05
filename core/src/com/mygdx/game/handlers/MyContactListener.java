@@ -16,6 +16,7 @@ import com.mygdx.game.utils.Tacho;
  */
 public class MyContactListener implements ContactListener {
 
+    public static boolean gameOver;
     @Override
     public void beginContact(Contact contact) {
 
@@ -58,6 +59,7 @@ public class MyContactListener implements ContactListener {
 
         }
         if (isContacTacho(fa, fb)) {
+            this.gameOver = false;
             Tacho sensor;
             Ball ball2;
             if (fa.getUserData() instanceof Tacho) {
@@ -69,7 +71,7 @@ public class MyContactListener implements ContactListener {
             }
             sensor.hit();
             ball2.trigger();
-
+            this.gameOver = true;
         }
 
          System.out.println("A collision happened!");
