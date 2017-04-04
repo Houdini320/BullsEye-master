@@ -31,15 +31,15 @@ public class BullsEyes extends Game implements InputProcessor {
 	//Variables de la Application
 	public static String APP_TITLE = "BullsEyes";
 	public static double APP_VERSION = 0.1;
-	public static int APP_DESKTOP_WIDTH = 800;
-	public static int APP_DESKTOP_HEIGHT = 600;
+	public static int APP_DESKTOP_WIDTH = 960;
+	public static int APP_DESKTOP_HEIGHT = 540;
 	public static int APP_FPS = 60;
 
 
 
 	//Variables del Game
-	public static int V_WIDTH = 800;
-	public static int V_HEIGHT = 600;
+	public static int V_WIDTH = 960;
+	public static int V_HEIGHT = 540;
    //960x540
 
 
@@ -56,8 +56,8 @@ public class BullsEyes extends Game implements InputProcessor {
 	public final static float SCALE = 32f;
 	public final static float INV_SCALE = 1.f/SCALE;
 	// this is our "target" resolution, not that the window can be any size, it is not bound to this one
-	public final static float VP_WIDTH = 800 * INV_SCALE;
-	public final static float VP_HEIGHT = 600 * INV_SCALE;
+	public final static float VP_WIDTH = 960 * INV_SCALE;
+	public final static float VP_HEIGHT = 540 * INV_SCALE;
 
 	private OrthographicCamera camera;
 	private ExtendViewport viewport;
@@ -81,6 +81,8 @@ public class BullsEyes extends Game implements InputProcessor {
 		shapeBatch = new ShapeRenderer();
 
 		camera = new OrthographicCamera();
+		//SettoOrtho para ver si se soluciona problema de tamaño en android
+		camera.setToOrtho(false, BullsEyes.APP_DESKTOP_WIDTH, BullsEyes.APP_DESKTOP_HEIGHT);
 		// pick a viewport that suits your thing, ExtendViewport is a good start
 		viewport = new ExtendViewport(VP_WIDTH, VP_HEIGHT, camera);
 		// ShapeRenderer so we can see our touch point
@@ -91,7 +93,7 @@ public class BullsEyes extends Game implements InputProcessor {
 		// Inicia la Pantalla del MainMenu
 		this.setScreen(new MainMenuScreen(this));
 		// Inicia la pantalla de GameOver
-		// TODO FALTA CREAR EL IF PARA QUE APAREZCA AL FINAL LA PANTALLA GAMEOVER
+
 
 
 	}
@@ -106,6 +108,7 @@ public class BullsEyes extends Game implements InputProcessor {
 		shapes.begin(ShapeRenderer.ShapeType.Filled);
 		shapes.circle(tp.x, tp.y, 0.25f, 16);
 		shapes.end();
+
 
 
 		//mouse joint
@@ -144,15 +147,17 @@ public class BullsEyes extends Game implements InputProcessor {
 		if (MyContactListener.gameOver) {
 
 			this.setScreen(new GameOverScreen(this));
+			GameScreen.fondoMusic.stop();
 		}
 
 	}
-	
+
 	@Override
 	public void dispose () {
 		assets.dispose();
 		shapeBatch.dispose();
 		batch.dispose();
+		shapes.dispose();
 		//font.dispose();
 
 

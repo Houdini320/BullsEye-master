@@ -14,4 +14,5 @@ public class AndroidLauncher extends AndroidApplication {
 		initialize(new BullsEyes(), config);
 
 	}
+
 }

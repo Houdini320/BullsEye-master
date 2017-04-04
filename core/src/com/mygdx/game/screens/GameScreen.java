@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -23,6 +24,7 @@ import com.mygdx.game.handlers.MyContactListener;
 import com.mygdx.game.utils.B2DBodyBuilder;
 import com.mygdx.game.utils.Ball;
 import com.mygdx.game.utils.Basquet;
+import com.mygdx.game.utils.KinematicBodies;
 import com.mygdx.game.utils.Tacho;
 
 import java.util.Random;
@@ -48,16 +50,20 @@ public class GameScreen extends AbstractScreen {
 
     //Game Bodies
     public static Body ball;
-    Body obstacle, obstacle2, obstacle3, obstacle4, obstacle5;
+    Body obstacle, obstacle2, obstacle3, obstacle4, obstacle5, fondo1;
     Body goal1, goal2, goal3, goal4;
     public static Ball ball2 = new Ball();
+    public static KinematicBodies kine1 = new KinematicBodies();
+    public static KinematicBodies kine2 = new KinematicBodies();
 
     //Batch
     SpriteBatch batch;
-    Texture tex, tacho, box1;
+    ShapeRenderer shapeBatch;
+    Texture tex, tacho, box1, fondo;
 
+    public static Vector2 mov1;
     //Musica
-    Music fondoMusic;
+    public static Music fondoMusic;
 
     //Random
     Random rnd;
@@ -110,9 +116,53 @@ public class GameScreen extends AbstractScreen {
         tex = new Texture("ball.png");
         box1 = new Texture("caja1.png");
         tacho = new Texture("tacho2x64.png");
+        fondo = new Texture("fondo.png");
+        shapeBatch = new ShapeRenderer();
+
+
+        // Vector2 [] mov1 = new Vector2 [5];
+        //ChainShape shape = new ChainShape();
+        //shape.createChain(mov1);
+      /*  Vector2 mov1 = new Vector2();
+        mov1.x = 100;
+        mov1.y = 250;
+        mov1.setLength(200);
+        mov1.set(20, 0);
+*/
 
 
         Gdx.input.setInputProcessor(app);
+
+      //  kine1.setLinearVelocity(tmp.set(-m_speed,0));
+        kine1.body.setAngularVelocity(2);
+
+       // kine2.body.localVector.set(mov1); b2Vec2 vel = body->GetLinearVelocity();
+
+
+
+        kine2.body.setLinearVelocity(new Vector2 (1,0));
+        if (kine2.body.getPosition().x > 7){
+            kine2.body.setLinearVelocity(new Vector2(-1,0));
+
+        }
+
+        //CUERPO KINEMATICO CON VECTOR
+/*
+        BodyDef tempBodyDef = new BodyDef();
+        tempBodyDef.type = BodyType.KinematicBody;
+        FixtureDef tempFD = new FixtureDef();
+        PolygonShape tempShape = new PolygonShape();
+        tempFD.shape = tempShape;
+        Vector2 tempVector = new Vector2();
+        tempVector.x = 0;
+        tempVector.y = 0;
+        tempShape.setAsBox(myWidth/2f, myHeight/2f, tempVector, myAngle);
+        tempBodyDef.position.set(myXPosition, myYPosition);
+        Body testBody = world.createBody(tempBodyDef);
+        testBody.createFixture(tempFD);
+        tempShape.dispose();
+*/
+
 
 
         // start the playback of the background music
@@ -151,11 +201,14 @@ public class GameScreen extends AbstractScreen {
         stage.draw();
 
         //Coordina el Batch y el shape con las coordenadas de la camara
-        app.batch.setProjectionMatrix(camera.combined);
-        app.shapeBatch.setProjectionMatrix(camera.combined);
+        //TODO aca hay q cambiar algo para que al pasarlo a android se dibujen bien los batchs
+        batch.setProjectionMatrix(camera.combined);
+        shapeBatch.setProjectionMatrix(camera.combined);
 
         //Inicia la musica en la Pantalla de juego
         fondoMusic.play();
+
+
 
 
         //update(Gdx.graphics.getDeltaTime());
@@ -163,13 +216,12 @@ public class GameScreen extends AbstractScreen {
         // tell the camera to update its matrices.
         // camera.update();
 
-        // tell the SpriteBatch to render in the
-        // coordinate system specified by the camera.
-        //app.batch.setProjectionMatrix(camera.combined);
 
 
         batch.begin();
 
+        //batch.draw(fondo, camera.viewportWidth  - (fondo.getWidth()), camera.viewportHeight  - (fondo.getHeight()));
+        //batch.draw(fondo, fondo1.getPosition().x * PPM - (fondo.getWidth() / 2), (fondo1.getPosition().y  * PPM - 0) - (fondo.getHeight() / 2));
         batch.draw(box1, obstacle.getPosition().x * PPM - (box1.getWidth() / 2), obstacle.getPosition().y * PPM - (box1.getHeight() / 2));
         batch.draw(tex, ball2.body.getPosition().x * PPM - (tex.getWidth() / 2), ball2.body.getPosition().y * PPM - (tex.getHeight() / 2));
         batch.draw(tacho, tacho1.body.getPosition().x * PPM - (tacho.getWidth() / 2), tacho1.body.getPosition().y + 3 * PPM - (tacho.getHeight() / 2));
@@ -187,7 +239,9 @@ public class GameScreen extends AbstractScreen {
 
     @Override
     public void resize(int width, int height) {
-        //camera.setToOrtho(false, width / SCALE, height / SCALE);
+      //  camera.setToOrtho(false, width , height);
+
+        //camera.setToOrtho(false, BullsEyes.APP_DESKTOP_WIDTH, BullsEyes.APP_DESKTOP_HEIGHT);
 
 
     }
@@ -213,6 +267,11 @@ public class GameScreen extends AbstractScreen {
         createBasquet(600, 110);
 
 
+
+
+
+
+
         //Crea los Objetos "Obstaculos" Estaticos o Dinamicos de la Clase B2DBodyBuilder
         //nombre = Clase y nombre del Metodo (Inserta en el world, posicion x, posicion y, Tamaño ancho, tamaño alto, Estatico/Dinamico, Sensor de contacto)
         obstacle = B2DBodyBuilder.createBox(world, camera.viewportWidth / 2, camera.viewportHeight / 2, 28, 28, true, true);
@@ -220,7 +279,12 @@ public class GameScreen extends AbstractScreen {
         obstacle3 = B2DBodyBuilder.createBox(world, 700, 350, 100, 50, true, false);
         //   obstacle3.getFixtureList().get(0).setUserData(obstacle3);
         obstacle4 = B2DBodyBuilder.createBox(world, 200, 550, 120, 20, true, false);
+        //fondo1 = B2DBodyBuilder.createBox(world, camera.viewportWidth / 2, camera.viewportHeight /2, 960, 540, true, true);
         //rectangletacho = B2DBodyBuilder.createBox(world, 650, 135, 100, 185, true, true);
+
+        //CREA LOS CUERPOS KINEMATICOS
+        kine1.createKine(world, 250, 350, 130, 40, false);
+        kine2.createKine(world, 250, 350, 180, 20, false);
 
         //Formar tacho con los obstaculos
         /**  goal1 = B2DBodyBuilder.createBox(world, 650, 50, 100, 15, true, false);
@@ -250,8 +314,8 @@ public class GameScreen extends AbstractScreen {
     private void createWalls() {
 
         Vector2[] verts = new Vector2[5];
-        verts[0] = new Vector2(0 / PPM, 0);
-        verts[1] = new Vector2(camera.viewportWidth / PPM, 0);
+        verts[0] = new Vector2(0 / PPM, 55 / PPM);
+        verts[1] = new Vector2(camera.viewportWidth / PPM, 55 / PPM);
         verts[2] = new Vector2(camera.viewportWidth / PPM, 900 / PPM);
         verts[3] = new Vector2(0 / PPM, 900 / PPM);
         verts[4] = new Vector2(0 / PPM, 0 / PPM);
@@ -394,8 +458,8 @@ public class GameScreen extends AbstractScreen {
         position.x = camera.viewportWidth / 2;
         position.y = camera.viewportHeight / 2;
         if (ball2.body.getPosition().y > 19) {
-            camera.position.y = ball2.body.getPosition().y * PPM ;
-            //camera.position.x = ball2.body.getPosition().x * PPM ;
+            camera.position.y = 19 * PPM ;
+            //camera.position.y = ball2.body.getPosition().y * PPM ;
         }
 
         camera.position.set(position);
@@ -429,10 +493,13 @@ public class GameScreen extends AbstractScreen {
         b2dr.dispose();
         world.dispose();
         tex.dispose();
+        box1.dispose();
+        tacho.dispose();
 
 
         fondoMusic.dispose();
         batch.dispose();
+        shapeBatch.dispose();
         //tmr.dispose();
         //map.dispose();
 

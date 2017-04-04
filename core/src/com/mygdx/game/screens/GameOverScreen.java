@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.mygdx.game.BullsEyes;
+import com.mygdx.game.handlers.MyContactListener;
 
 /**
  * Created by Houdini on 15/11/2016.
@@ -35,11 +36,12 @@ public class GameOverScreen extends AbstractScreen {
 
         //Dibuja las letras de la pantalla MainMenu
         app.batch.begin();
-        font.draw(app.batch, "Game Over", 220, 350);
-        font2.draw(app.batch, "Toca la pantalla para volver al Menu", 120, 100);
+        font.draw(app.batch, "Game Over", 320, 350);
+        font2.draw(app.batch, "Toca la pantalla para volver al Menu", 220, 100);
         app.batch.end();
 
         if (Gdx.input.isTouched()) {
+            MyContactListener.gameOver = false;
             app.setScreen(new MainMenuScreen(app));
             dispose();
         }
@@ -56,12 +58,12 @@ public class GameOverScreen extends AbstractScreen {
     public void show() {
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, BullsEyes.V_WIDTH, BullsEyes.V_HEIGHT);
+        camera.setToOrtho(false,  BullsEyes.APP_DESKTOP_WIDTH, BullsEyes.APP_DESKTOP_HEIGHT);
         b2dr = new Box2DDebugRenderer();
 
         //Dice donde se encuentran los archivos de la Fuente de GameOVer
         font = new BitmapFont(Gdx.files.internal("gameover.fnt"), Gdx.files.internal("gameover.png"), false);
-       font2 = new BitmapFont(Gdx.files.internal("gameover25.fnt"), Gdx.files.internal("gameover25.png"), false);
+        font2 = new BitmapFont(Gdx.files.internal("gameover25.fnt"), Gdx.files.internal("gameover25.png"), false);
         batch = new SpriteBatch();
     }
 
@@ -86,6 +88,7 @@ public class GameOverScreen extends AbstractScreen {
 
         batch.dispose();
         font.dispose();
+        font2.dispose();
         b2dr.dispose();
 
     }
